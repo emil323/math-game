@@ -43,7 +43,7 @@ export function generateProblem(
 // Fraction problems
 // ---------------------------------------------------------------------------
 
-function generateFractionProblem(difficulty: Difficulty): MathProblem {
+export function generateFractionProblem(difficulty: Difficulty): MathProblem {
   const operation: Operation = Math.random() < 0.5 ? 'fractionAdd' : 'fractionSub';
 
   let denRangeMin: number;
@@ -117,7 +117,7 @@ function generateFractionProblem(difficulty: Difficulty): MathProblem {
 // Whole number problems
 // ---------------------------------------------------------------------------
 
-function generateWholeNumberProblem(difficulty: Difficulty): MathProblem {
+export function generateWholeNumberProblem(difficulty: Difficulty): MathProblem {
   const operations: Operation[] = ['addition', 'subtraction', 'multiplication', 'division'];
   const operation = operations[randomInt(0, 3)];
 
@@ -205,7 +205,7 @@ function generateWholeNumberProblem(difficulty: Difficulty): MathProblem {
 // Equation problems (ax ± b = c)
 // ---------------------------------------------------------------------------
 
-function generateEquationProblem(difficulty: Difficulty): MathProblem {
+export function generateEquationProblem(difficulty: Difficulty): MathProblem {
   // Work backwards: pick x (the answer) first, then build the equation
 
   let xMin: number;
