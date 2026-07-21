@@ -86,7 +86,14 @@ export default function MathProblemDisplay({
       {feedback === 'incorrect' && !acknowledged && (
         <div className="feedback incorrect">
           <p>
-            ❌ Wrong! The answer was <strong>{correctAnswerText}</strong>
+            ❌ Wrong! The answer was{' '}
+            {problem.isFraction && problem.answerNum !== undefined && problem.answerDen !== undefined ? (
+              <span className="inline-fraction">
+                <FractionDisplay numerator={problem.answerNum} denominator={problem.answerDen} />
+              </span>
+            ) : (
+              <strong>{correctAnswerText}</strong>
+            )}
           </p>
           <button
             ref={ackBtnRef}
