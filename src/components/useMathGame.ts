@@ -24,7 +24,7 @@ function generateProblem(
   const hasFraction = categories.includes('fraction');
 
   if (hasWhole && hasFraction) {
-    return Math.random() < 0.5
+    return Math.random() < 0.3
       ? generateFractionProblem(difficulty)
       : generateWholeNumberProblem(difficulty);
   }
