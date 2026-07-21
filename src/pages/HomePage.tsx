@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import type { Difficulty } from '../types';
 
 const difficulties: { value: Difficulty; label: string; description: string }[] = [

@@ -1,4 +1,4 @@
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router';
 
 export default function ResultsPage() {
   const [searchParams] = useSearchParams();

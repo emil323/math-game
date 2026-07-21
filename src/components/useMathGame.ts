@@ -60,11 +60,11 @@ export function useMathGame(difficulty: Difficulty, totalProblems: number) {
       if (feedback !== null) return; // Already answered
 
       const isCorrect = answer === currentProblem.correctAnswer;
-      setCurrentProblem((prev) => ({ ...prev, userAnswer: answer, isCorrect: isCorrect }));
+      setCurrentProblem((prev: MathProblem) => ({ ...prev, userAnswer: answer, isCorrect: isCorrect }));
       setFeedback(isCorrect ? 'correct' : 'incorrect');
       // Correct answers can proceed immediately; incorrect require acknowledgment
       setAcknowledged(isCorrect);
-      if (isCorrect) setScore((prev) => prev + 1);
+      if (isCorrect) setScore((prev: number) => prev + 1);
     },
     [currentProblem.correctAnswer, feedback]
   );
@@ -78,7 +78,7 @@ export function useMathGame(difficulty: Difficulty, totalProblems: number) {
       setGameOver(true);
       return;
     }
-    setProblemIndex((prev) => prev + 1);
+    setProblemIndex((prev: number) => prev + 1);
     setCurrentProblem(generateProblem(difficulty));
     setFeedback(null);
     setAcknowledged(false);

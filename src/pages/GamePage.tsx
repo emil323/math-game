@@ -1,4 +1,4 @@
-import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router';
 import { useEffect, useRef } from 'react';
 import type { Difficulty } from '../types';
 import { useMathGame } from '../components/useMathGame';
