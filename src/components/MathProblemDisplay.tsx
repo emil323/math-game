@@ -16,7 +16,14 @@ export default function MathProblemDisplay({
   acknowledged,
   onAcknowledge,
 }: MathProblemDisplayProps) {
-  const operator = problem.operation === 'addition' ? '+' : '−';
+  const operator =
+    problem.operation === 'addition'
+      ? '+'
+      : problem.operation === 'subtraction'
+        ? '−'
+        : problem.operation === 'multiplication'
+          ? '×'
+          : '÷';
   const ackBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {

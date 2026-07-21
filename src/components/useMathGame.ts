@@ -6,40 +6,83 @@ function randomInt(min: number, max: number): number {
 }
 
 function generateProblem(difficulty: Difficulty): MathProblem {
-  const operations: Operation[] = ['addition', 'subtraction'];
-  const operation = operations[randomInt(0, 1)];
+  const operations: Operation[] = ['addition', 'subtraction', 'multiplication', 'division'];
+  const operation = operations[randomInt(0, 3)];
 
   let num1: number;
   let num2: number;
 
-  switch (difficulty) {
-    case 'easy':
-      num1 = randomInt(1, 10);
-      num2 = randomInt(1, 10);
-      break;
-    case 'medium':
-      num1 = randomInt(10, 50);
-      num2 = randomInt(10, 50);
-      break;
-    case 'hard':
-      num1 = randomInt(50, 100);
-      num2 = randomInt(50, 100);
-      break;
-    default:
-      num1 = randomInt(1, 10);
-      num2 = randomInt(1, 10);
+  if (operation === 'multiplication' || operation === 'division') {
+    // Smaller ranges for multiplication/division so answers stay reasonable
+    switch (difficulty) {
+      case 'easy':
+        num1 = randomInt(1, 5);
+        num2 = randomInt(1, 5);
+        break;
+      case 'medium':
+        num1 = randomInt(2, 12);
+        num2 = randomInt(2, 12);
+        break;
+      case 'hard':
+        num1 = randomInt(5, 20);
+        num2 = randomInt(2, 15);
+        break;
+      default:
+        num1 = randomInt(1, 5);
+        num2 = randomInt(1, 5);
+    }
+
+    if (operation === 'division') {
+      // Generate clean division: num1 = num2 * answer, so num1 / num2 = answer
+      const answer = num1;
+      num1 = num2 * answer;
+    }
+  } else {
+    switch (difficulty) {
+      case 'easy':
+        num1 = randomInt(1, 10);
+        num2 = randomInt(1, 10);
+        break;
+      case 'medium':
+        num1 = randomInt(10, 50);
+        num2 = randomInt(10, 50);
+        break;
+      case 'hard':
+        num1 = randomInt(50, 100);
+        num2 = randomInt(50, 100);
+        break;
+      default:
+        num1 = randomInt(1, 10);
+        num2 = randomInt(1, 10);
+    }
+
+    // For subtraction, ensure the result is non-negative
+    if (operation === 'subtraction' && num1 < num2) {
+      [num1, num2] = [num2, num1];
+    }
   }
 
-  // For subtraction, ensure the result is non-negative
-  if (operation === 'subtraction' && num1 < num2) {
-    [num1, num2] = [num2, num1];
+  let correctAnswer: number;
+  switch (operation) {
+    case 'addition':
+      correctAnswer = num1 + num2;
+      break;
+    case 'subtraction':
+      correctAnswer = num1 - num2;
+      break;
+    case 'multiplication':
+      correctAnswer = num1 * num2;
+      break;
+    case 'division':
+      correctAnswer = num1 / num2;
+      break;
   }
 
   return {
     num1,
     num2,
     operation,
-    correctAnswer: operation === 'addition' ? num1 + num2 : num1 - num2,
+    correctAnswer,
     userAnswer: null,
     isCorrect: null,
   };

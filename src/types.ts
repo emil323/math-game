@@ -1,4 +1,4 @@
-export type Operation = 'addition' | 'subtraction';
+export type Operation = 'addition' | 'subtraction' | 'multiplication' | 'division';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
