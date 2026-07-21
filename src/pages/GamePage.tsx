@@ -1,6 +1,6 @@
 import { useSearchParams, useNavigate, Link } from 'react-router';
 import { useEffect, useRef } from 'react';
-import type { Difficulty } from '../types';
+import type { Difficulty, ProblemCategory } from '../types';
 import { useMathGame } from '../components/useMathGame';
 import MathProblemDisplay from '../components/MathProblemDisplay';
 import ScoreBoard from '../components/ScoreBoard';
@@ -10,6 +10,8 @@ export default function GamePage() {
   const navigate = useNavigate();
   const difficulty = (searchParams.get('difficulty') as Difficulty) || 'easy';
   const count = Number.parseInt(searchParams.get('count') || '10', 10);
+  const categoriesParam = searchParams.get('categories') || 'whole,fraction';
+  const categories = categoriesParam.split(',').filter(Boolean) as ProblemCategory[];
   const nextBtnRef = useRef<HTMLButtonElement>(null);
   const {
     currentProblem,
@@ -23,7 +25,7 @@ export default function GamePage() {
     checkFractionAnswer,
     acknowledge,
     nextProblem,
-  } = useMathGame(difficulty, count);
+  } = useMathGame(difficulty, count, categories);
 
   useEffect(() => {
     if (acknowledged && nextBtnRef.current) {

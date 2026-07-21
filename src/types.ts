@@ -8,6 +8,8 @@ export type Operation =
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
+export type ProblemCategory = 'whole' | 'fraction';
+
 export interface MathProblem {
   num1: number;
   num2: number;

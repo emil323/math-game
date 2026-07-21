@@ -127,6 +127,11 @@ legend {
   background: var(--primary-hover);
 }
 
+.play-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Scoreboard */
 .scoreboard {
   display: flex;

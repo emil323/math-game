@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
-import type { Difficulty } from '../types';
+import type { Difficulty, ProblemCategory } from '../types';
 
 const difficulties: { value: Difficulty; label: string; description: string }[] = [
   { value: 'easy', label: 'Easy', description: 'Numbers 1–10' },
@@ -10,13 +10,29 @@ const difficulties: { value: Difficulty; label: string; description: string }[] 
 
 const problemCounts = [5, 10, 20];
 
+const categoryOptions: { value: ProblemCategory; label: string; description: string }[] = [
+  { value: 'whole', label: 'Whole Numbers', description: '+ − × ÷' },
+  { value: 'fraction', label: 'Fractions', description: '½ + ⅓ − ¼' },
+];
+
 export default function HomePage() {
   const navigate = useNavigate();
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [count, setCount] = useState(10);
+  const [categories, setCategories] = useState<ProblemCategory[]>(['whole', 'fraction']);
+
+  const toggleCategory = (value: ProblemCategory) => {
+    setCategories((prev) =>
+      prev.includes(value)
+        ? prev.filter((c) => c !== value)
+        : [...prev, value],
+    );
+  };
 
   const startGame = () => {
-    navigate(`/play?difficulty=${difficulty}&count=${count}`);
+    if (categories.length === 0) return;
+    const cats = categories.join(',');
+    navigate(`/play?difficulty=${difficulty}&count=${count}&categories=${cats}`);
   };
 
   return (
@@ -43,6 +59,23 @@ export default function HomePage() {
         </fieldset>
 
         <fieldset>
+          <legend>Problem Types</legend>
+          <div className="option-group">
+            {categoryOptions.map((cat) => (
+              <button
+                key={cat.value}
+                type="button"
+                className={`option-card ${categories.includes(cat.value) ? 'selected' : ''}`}
+                onClick={() => toggleCategory(cat.value)}
+              >
+                <strong>{cat.label}</strong>
+                <span>{cat.description}</span>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
           <legend>Number of Problems</legend>
           <div className="option-group">
             {problemCounts.map((c) => (
@@ -59,7 +92,12 @@ export default function HomePage() {
         </fieldset>
       </div>
 
-      <button type="button" className="play-btn" onClick={startGame}>
+      <button
+        type="button"
+        className={`play-btn ${categories.length === 0 ? 'disabled' : ''}`}
+        onClick={startGame}
+        disabled={categories.length === 0}
+      >
         Start Game
       </button>
     </div>

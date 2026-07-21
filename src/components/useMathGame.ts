@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { MathProblem, Difficulty, Operation } from '../types';
+import type { MathProblem, Difficulty, Operation, ProblemCategory } from '../types';
 
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -16,14 +16,21 @@ function gcd(aParam: number, bParam: number): number {
   return a;
 }
 
-function generateProblem(difficulty: Difficulty): MathProblem {
-  // ~50% chance of a fraction problem
-  const isFraction = Math.random() < 0.5;
+function generateProblem(
+  difficulty: Difficulty,
+  categories: ProblemCategory[],
+): MathProblem {
+  const hasWhole = categories.includes('whole');
+  const hasFraction = categories.includes('fraction');
 
-  if (isFraction) {
+  if (hasWhole && hasFraction) {
+    return Math.random() < 0.5
+      ? generateFractionProblem(difficulty)
+      : generateWholeNumberProblem(difficulty);
+  }
+  if (hasFraction) {
     return generateFractionProblem(difficulty);
   }
-
   return generateWholeNumberProblem(difficulty);
 }
 
@@ -184,9 +191,13 @@ function generateWholeNumberProblem(difficulty: Difficulty): MathProblem {
   };
 }
 
-export function useMathGame(difficulty: Difficulty, totalProblems: number) {
+export function useMathGame(
+  difficulty: Difficulty,
+  totalProblems: number,
+  categories: ProblemCategory[],
+) {
   const [currentProblem, setCurrentProblem] = useState<MathProblem>(() =>
-    generateProblem(difficulty),
+    generateProblem(difficulty, categories),
   );
   const [problemIndex, setProblemIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -252,19 +263,19 @@ export function useMathGame(difficulty: Difficulty, totalProblems: number) {
       return;
     }
     setProblemIndex((prev: number) => prev + 1);
-    setCurrentProblem(generateProblem(difficulty));
+    setCurrentProblem(generateProblem(difficulty, categories));
     setFeedback(null);
     setAcknowledged(false);
-  }, [problemIndex, totalProblems, difficulty]);
+  }, [problemIndex, totalProblems, difficulty, categories]);
 
   const resetGame = useCallback(() => {
-    setCurrentProblem(generateProblem(difficulty));
+    setCurrentProblem(generateProblem(difficulty, categories));
     setProblemIndex(0);
     setScore(0);
     setGameOver(false);
     setFeedback(null);
     setAcknowledged(false);
-  }, [difficulty]);
+  }, [difficulty, categories]);
 
   return {
     currentProblem,
