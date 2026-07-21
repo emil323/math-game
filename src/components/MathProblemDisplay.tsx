@@ -123,7 +123,11 @@ function getOperator(operation: MathProblem['operation']): string {
   if (operation === 'multiplication') {
     return '×';
   }
-  return '÷';
+  if (operation === 'division') {
+    return '÷';
+  }
+  // equation is handled separately in EquationProblemDisplay
+  return '';
 }
 
 function getCorrectAnswerText(problem: MathProblem): string {
@@ -190,40 +194,22 @@ function WholeNumberProblemDisplay({
 }
 
 function EquationProblemDisplay({ problem }: { problem: MathProblem }) {
-  if (problem.operation === 'equationAdd') {
-    // x + num2 = num1
-    return (
-      <div className="problem-text">
-        <span className="variable">x</span>
-        <span className="operator">+</span>
-        <span className="operand">{problem.num2}</span>
-        <span className="equals">=</span>
-        <span className="operand">{problem.num1}</span>
-      </div>
-    );
-  }
+  const coeff = problem.eqCoeff ?? 1;
+  const constant = problem.eqConstant ?? 0;
+  const result = problem.eqResult ?? 0;
+  const op = problem.eqOp ?? '+';
+  const opSymbol = op === '+' ? '+' : '−';
 
-  if (problem.operation === 'equationSub') {
-    // x - num2 = num1
-    return (
-      <div className="problem-text">
-        <span className="variable">x</span>
-        <span className="operator">−</span>
-        <span className="operand">{problem.num2}</span>
-        <span className="equals">=</span>
-        <span className="operand">{problem.num1}</span>
-      </div>
-    );
-  }
+  // Show coefficient only when > 1 ("x" instead of "1x")
+  const coeffDisplay = coeff > 1 ? `${coeff}x` : 'x';
 
-  // equationMul: num1 × x = num2
   return (
     <div className="problem-text">
-      <span className="operand">{problem.num1}</span>
-      <span className="operator">×</span>
-      <span className="variable">x</span>
+      <span className="variable">{coeffDisplay}</span>
+      <span className="operator">{opSymbol}</span>
+      <span className="operand">{constant}</span>
       <span className="equals">=</span>
-      <span className="operand">{problem.num2}</span>
+      <span className="operand">{result}</span>
     </div>
   );
 }

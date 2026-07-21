@@ -13,7 +13,7 @@ const problemCounts = [5, 10, 20];
 const categoryOptions: { value: ProblemCategory; label: string; description: string }[] = [
   { value: 'whole', label: 'Heltall', description: '+ − × ÷' },
   { value: 'fraction', label: 'Brøk', description: '½ + ⅓ − ¼' },
-  { value: 'equation', label: 'Likninger', description: 'x + 5 = 12' },
+  { value: 'equation', label: 'Likninger', description: '2x + 3 = 11' },
 ];
 
 export default function HomePage() {

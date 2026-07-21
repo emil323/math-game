@@ -194,99 +194,77 @@ function generateWholeNumberProblem(difficulty: Difficulty): MathProblem {
 }
 
 function generateEquationProblem(difficulty: Difficulty): MathProblem {
-  // Pick equation type based on difficulty
-  let operations: Operation[];
-  switch (difficulty) {
-    case 'easy':
-      operations = ['equationAdd', 'equationSub'];
-      break;
-    case 'medium':
-      operations = ['equationAdd', 'equationSub', 'equationMul'];
-      break;
-    case 'hard':
-      operations = ['equationAdd', 'equationSub', 'equationMul'];
-      break;
-    default:
-      operations = ['equationAdd', 'equationSub'];
-  }
-  const operation = operations[randomInt(0, operations.length - 1)];
+  // Work backwards: pick x (the answer) first, then build the equation
+  // Format: ax ± b = c  (two-step equation)
 
-  // Work backwards: pick the answer (x) first, then build the equation
-  let answerRangeMin: number;
-  let answerRangeMax: number;
-  let coeffRangeMin: number;
-  let coeffRangeMax: number;
+  let xMin: number;
+  let xMax: number;
+  let aMin: number;
+  let aMax: number;
+  let bMin: number;
+  let bMax: number;
 
   switch (difficulty) {
     case 'easy':
-      answerRangeMin = 1;
-      answerRangeMax = 10;
-      coeffRangeMin = 1;
-      coeffRangeMax = 10;
+      // Simple: x + b = c  (a = 1, addition only)
+      xMin = 1;
+      xMax = 10;
+      aMin = 1;
+      aMax = 1;
+      bMin = 1;
+      bMax = 10;
       break;
     case 'medium':
-      answerRangeMin = 1;
-      answerRangeMax = 20;
-      coeffRangeMin = 2;
-      coeffRangeMax = 12;
+      // Two-step: ax + b = c  (a = 2–4)
+      xMin = 1;
+      xMax = 12;
+      aMin = 2;
+      aMax = 4;
+      bMin = 1;
+      bMax = 12;
       break;
     case 'hard':
-      answerRangeMin = 5;
-      answerRangeMax = 50;
-      coeffRangeMin = 3;
-      coeffRangeMax = 15;
+      // Two-step with subtraction: ax − b = c  (a = 3–6)
+      xMin = 2;
+      xMax = 15;
+      aMin = 3;
+      aMax = 6;
+      bMin = 1;
+      bMax = 15;
       break;
     default:
-      answerRangeMin = 1;
-      answerRangeMax = 10;
-      coeffRangeMin = 1;
-      coeffRangeMax = 10;
+      xMin = 1;
+      xMax = 10;
+      aMin = 1;
+      aMax = 1;
+      bMin = 1;
+      bMax = 10;
   }
 
-  const answer = randomInt(answerRangeMin, answerRangeMax);
-  const coeff = randomInt(coeffRangeMin, coeffRangeMax);
+  const x = randomInt(xMin, xMax);
+  const a = randomInt(aMin, aMax);
+  const b = randomInt(bMin, bMax);
 
-  if (operation === 'equationAdd') {
-    // x + coeff = result  →  answer + coeff = result
-    const result = answer + coeff;
-    return {
-      num1: result,
-      num2: coeff,
-      operation: 'equationAdd',
-      correctAnswer: answer,
-      userAnswer: null,
-      isCorrect: null,
-      isFraction: false,
-      isEquation: true,
-    };
-  }
+  // Pick operator: easy is always +, medium/hard mix + and −
+  const usePlus = difficulty === 'easy' || Math.random() < 0.6;
+  const op = usePlus ? '+' : '-';
 
-  if (operation === 'equationSub') {
-    // x - coeff = result  →  answer - coeff = result  (ensure non-negative result)
-    const result = Math.max(0, answer - coeff);
-    return {
-      num1: result,
-      num2: coeff,
-      operation: 'equationSub',
-      correctAnswer: answer,
-      userAnswer: null,
-      isCorrect: null,
-      isFraction: false,
-      isEquation: true,
-    };
-  }
+  // Compute c so the equation is always solvable with whole numbers
+  const c = op === '+' ? a * x + b : a * x - b;
 
-  // equationMul: coeff * x = result  →  coeff * answer = result
-  const result = coeff * answer;
   return {
-    num1: coeff,
-    num2: result,
-    operation: 'equationMul',
-    correctAnswer: answer,
+    num1: 0,
+    num2: 0,
+    operation: 'equation',
+    correctAnswer: x,
     userAnswer: null,
     isCorrect: null,
     isFraction: false,
     isEquation: true,
+    eqCoeff: a,
+    eqConstant: b,
+    eqResult: c,
+    eqOp: op,
   };
 }
 

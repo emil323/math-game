@@ -5,9 +5,7 @@ export type Operation =
   | 'division'
   | 'fractionAdd'
   | 'fractionSub'
-  | 'equationAdd'
-  | 'equationSub'
-  | 'equationMul';
+  | 'equation';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -30,6 +28,11 @@ export interface MathProblem {
   userAnswerNum?: number;
   userAnswerDen?: number;
   isEquation?: boolean;
+  // Equation-specific fields: ax ± b = c
+  eqCoeff?: number;    // a in "ax + b = c"
+  eqConstant?: number; // b in "ax + b = c"
+  eqResult?: number;   // c in "ax + b = c"
+  eqOp?: '+' | '-';    // operator between ax and b
 }
 
 export interface GameStats {
