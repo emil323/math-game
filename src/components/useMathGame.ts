@@ -5,7 +5,103 @@ function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function gcd(aParam: number, bParam: number): number {
+  let a = Math.abs(aParam);
+  let b = Math.abs(bParam);
+  while (b) {
+    const t = b;
+    b = a % b;
+    a = t;
+  }
+  return a;
+}
+
 function generateProblem(difficulty: Difficulty): MathProblem {
+  // ~50% chance of a fraction problem
+  const isFraction = Math.random() < 0.5;
+
+  if (isFraction) {
+    return generateFractionProblem(difficulty);
+  }
+
+  return generateWholeNumberProblem(difficulty);
+}
+
+function generateFractionProblem(difficulty: Difficulty): MathProblem {
+  const operation: Operation =
+    Math.random() < 0.5 ? 'fractionAdd' : 'fractionSub';
+
+  let denRangeMin: number;
+  let denRangeMax: number;
+  let sameDenominator: boolean;
+
+  switch (difficulty) {
+    case 'easy':
+      denRangeMin = 2;
+      denRangeMax = 4;
+      sameDenominator = true;
+      break;
+    case 'medium':
+      denRangeMin = 2;
+      denRangeMax = 6;
+      sameDenominator = Math.random() < 0.5;
+      break;
+    case 'hard':
+      denRangeMin = 2;
+      denRangeMax = 12;
+      sameDenominator = false;
+      break;
+    default:
+      denRangeMin = 2;
+      denRangeMax = 4;
+      sameDenominator = true;
+  }
+
+  let num1Den = randomInt(denRangeMin, denRangeMax);
+  let num1Num = randomInt(1, num1Den);
+  let num2Den = sameDenominator ? num1Den : randomInt(denRangeMin, denRangeMax);
+  let num2Num = randomInt(1, num2Den);
+
+  // For subtraction, ensure non-negative result by swapping if needed
+  if (operation === 'fractionSub') {
+    const val1 = num1Num / num1Den;
+    const val2 = num2Num / num2Den;
+    if (val1 < val2) {
+      [num1Num, num2Num] = [num2Num, num1Num];
+      [num1Den, num2Den] = [num2Den, num1Den];
+    }
+  }
+
+  // Compute answer: common denominator = num1Den * num2Den
+  const commonDen = num1Den * num2Den;
+  const an =
+    operation === 'fractionAdd'
+      ? num1Num * num2Den + num2Num * num1Den
+      : num1Num * num2Den - num2Num * num1Den;
+
+  // Reduce the answer fraction
+  const g = gcd(an, commonDen);
+  const answerNum = an / g;
+  const answerDen = commonDen / g;
+
+  return {
+    num1: 0,
+    num2: 0,
+    operation,
+    correctAnswer: 0,
+    userAnswer: null,
+    isCorrect: null,
+    isFraction: true,
+    num1Num,
+    num1Den,
+    num2Num,
+    num2Den,
+    answerNum,
+    answerDen,
+  };
+}
+
+function generateWholeNumberProblem(difficulty: Difficulty): MathProblem {
   const operations: Operation[] = ['addition', 'subtraction', 'multiplication', 'division'];
   const operation = operations[randomInt(0, 3)];
 
@@ -13,7 +109,6 @@ function generateProblem(difficulty: Difficulty): MathProblem {
   let num2: number;
 
   if (operation === 'multiplication' || operation === 'division') {
-    // Smaller ranges for multiplication/division so answers stay reasonable
     switch (difficulty) {
       case 'easy':
         num1 = randomInt(1, 5);
@@ -33,7 +128,6 @@ function generateProblem(difficulty: Difficulty): MathProblem {
     }
 
     if (operation === 'division') {
-      // Generate clean division: num1 = num2 * answer, so num1 / num2 = answer
       const answer = num1;
       num1 = num2 * answer;
     }
@@ -56,7 +150,6 @@ function generateProblem(difficulty: Difficulty): MathProblem {
         num2 = randomInt(1, 10);
     }
 
-    // For subtraction, ensure the result is non-negative
     if (operation === 'subtraction' && num1 < num2) {
       [num1, num2] = [num2, num1];
     }
@@ -76,6 +169,8 @@ function generateProblem(difficulty: Difficulty): MathProblem {
     case 'division':
       correctAnswer = num1 / num2;
       break;
+    default:
+      correctAnswer = 0;
   }
 
   return {
@@ -85,12 +180,13 @@ function generateProblem(difficulty: Difficulty): MathProblem {
     correctAnswer,
     userAnswer: null,
     isCorrect: null,
+    isFraction: false,
   };
 }
 
 export function useMathGame(difficulty: Difficulty, totalProblems: number) {
   const [currentProblem, setCurrentProblem] = useState<MathProblem>(() =>
-    generateProblem(difficulty)
+    generateProblem(difficulty),
   );
   const [problemIndex, setProblemIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -100,16 +196,50 @@ export function useMathGame(difficulty: Difficulty, totalProblems: number) {
 
   const checkAnswer = useCallback(
     (answer: number) => {
-      if (feedback !== null) return; // Already answered
+      if (feedback !== null) return;
 
       const isCorrect = answer === currentProblem.correctAnswer;
-      setCurrentProblem((prev: MathProblem) => ({ ...prev, userAnswer: answer, isCorrect: isCorrect }));
+      setCurrentProblem((prev: MathProblem) => ({
+        ...prev,
+        userAnswer: answer,
+        isCorrect: isCorrect,
+      }));
       setFeedback(isCorrect ? 'correct' : 'incorrect');
-      // Correct answers can proceed immediately; incorrect require acknowledgment
       setAcknowledged(isCorrect);
-      if (isCorrect) setScore((prev: number) => prev + 1);
+      if (isCorrect) {
+        setScore((prev: number) => prev + 1);
+      }
     },
-    [currentProblem.correctAnswer, feedback]
+    [currentProblem.correctAnswer, feedback],
+  );
+
+  const checkFractionAnswer = useCallback(
+    (userNum: number, userDen: number) => {
+      if (feedback !== null) return;
+      if (userDen === 0) return;
+
+      // Reduce user's answer
+      const userGcd = gcd(userNum, userDen);
+      const reducedUserNum = userNum / userGcd;
+      const reducedUserDen = userDen / userGcd;
+
+      const isCorrect =
+        reducedUserNum === currentProblem.answerNum &&
+        reducedUserDen === currentProblem.answerDen;
+
+      setCurrentProblem((prev: MathProblem) => ({
+        ...prev,
+        userAnswerNum: userNum,
+        userAnswerDen: userDen,
+        isCorrect: isCorrect,
+      }));
+      setFeedback(isCorrect ? 'correct' : 'incorrect');
+      setAcknowledged(isCorrect);
+      if (isCorrect) {
+        setScore((prev: number) => prev + 1);
+      }
+    },
+    [currentProblem.answerNum, currentProblem.answerDen, feedback],
   );
 
   const acknowledge = useCallback(() => {
@@ -145,6 +275,7 @@ export function useMathGame(difficulty: Difficulty, totalProblems: number) {
     feedback,
     acknowledged,
     checkAnswer,
+    checkFractionAnswer,
     acknowledge,
     nextProblem,
     resetGame,

@@ -1,4 +1,10 @@
-export type Operation = 'addition' | 'subtraction' | 'multiplication' | 'division';
+export type Operation =
+  | 'addition'
+  | 'subtraction'
+  | 'multiplication'
+  | 'division'
+  | 'fractionAdd'
+  | 'fractionSub';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -9,6 +15,15 @@ export interface MathProblem {
   correctAnswer: number;
   userAnswer: number | null;
   isCorrect: boolean | null;
+  isFraction?: boolean;
+  num1Num?: number;
+  num1Den?: number;
+  num2Num?: number;
+  num2Den?: number;
+  answerNum?: number;
+  answerDen?: number;
+  userAnswerNum?: number;
+  userAnswerDen?: number;
 }
 
 export interface GameStats {

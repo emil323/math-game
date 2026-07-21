@@ -20,6 +20,7 @@ export default function GamePage() {
     feedback,
     acknowledged,
     checkAnswer,
+    checkFractionAnswer,
     acknowledge,
     nextProblem,
   } = useMathGame(difficulty, count);
@@ -43,6 +44,7 @@ export default function GamePage() {
         key={problemIndex}
         problem={currentProblem}
         onAnswer={checkAnswer}
+        onFractionAnswer={checkFractionAnswer}
         feedback={feedback}
         acknowledged={acknowledged}
         onAcknowledge={acknowledge}

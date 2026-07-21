@@ -22,7 +22,7 @@ export default function HomePage() {
   return (
     <div className="page home-page">
       <h1>🧮 Math Game</h1>
-      <p className="subtitle">Practice addition and subtraction!</p>
+      <p className="subtitle">Practice addition, subtraction, multiplication, division &amp; fractions!</p>
 
       <div className="options">
         <fieldset>
