@@ -43,7 +43,7 @@ A browser-based math practice game for building arithmetic, fraction, and equati
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 24+
 - [pnpm](https://pnpm.io/) (recommended)
 
 ### Install & Run
