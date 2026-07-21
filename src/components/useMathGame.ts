@@ -22,15 +22,19 @@ function generateProblem(
 ): MathProblem {
   const hasWhole = categories.includes('whole');
   const hasFraction = categories.includes('fraction');
+  const hasEquation = categories.includes('equation');
 
-  if (hasWhole && hasFraction) {
-    return Math.random() < 0.3
-      ? generateFractionProblem(difficulty)
-      : generateWholeNumberProblem(difficulty);
-  }
-  if (hasFraction) {
-    return generateFractionProblem(difficulty);
-  }
+  // Pick a category proportionally
+  const activeCategories = [
+    hasWhole ? 'whole' : null,
+    hasFraction ? 'fraction' : null,
+    hasEquation ? 'equation' : null,
+  ].filter(Boolean) as ProblemCategory[];
+
+  const chosen = activeCategories[randomInt(0, activeCategories.length - 1)];
+
+  if (chosen === 'fraction') return generateFractionProblem(difficulty);
+  if (chosen === 'equation') return generateEquationProblem(difficulty);
   return generateWholeNumberProblem(difficulty);
 }
 
@@ -69,7 +73,6 @@ function generateFractionProblem(difficulty: Difficulty): MathProblem {
   let num2Den = sameDenominator ? num1Den : randomInt(denRangeMin, denRangeMax);
   let num2Num = randomInt(1, num2Den);
 
-  // For subtraction, ensure non-negative result by swapping if needed
   if (operation === 'fractionSub') {
     const val1 = num1Num / num1Den;
     const val2 = num2Num / num2Den;
@@ -79,14 +82,12 @@ function generateFractionProblem(difficulty: Difficulty): MathProblem {
     }
   }
 
-  // Compute answer: common denominator = num1Den * num2Den
   const commonDen = num1Den * num2Den;
   const an =
     operation === 'fractionAdd'
       ? num1Num * num2Den + num2Num * num1Den
       : num1Num * num2Den - num2Num * num1Den;
 
-  // Reduce the answer fraction
   const g = gcd(an, commonDen);
   const answerNum = an / g;
   const answerDen = commonDen / g;
@@ -188,6 +189,104 @@ function generateWholeNumberProblem(difficulty: Difficulty): MathProblem {
     userAnswer: null,
     isCorrect: null,
     isFraction: false,
+    isEquation: false,
+  };
+}
+
+function generateEquationProblem(difficulty: Difficulty): MathProblem {
+  // Pick equation type based on difficulty
+  let operations: Operation[];
+  switch (difficulty) {
+    case 'easy':
+      operations = ['equationAdd', 'equationSub'];
+      break;
+    case 'medium':
+      operations = ['equationAdd', 'equationSub', 'equationMul'];
+      break;
+    case 'hard':
+      operations = ['equationAdd', 'equationSub', 'equationMul'];
+      break;
+    default:
+      operations = ['equationAdd', 'equationSub'];
+  }
+  const operation = operations[randomInt(0, operations.length - 1)];
+
+  // Work backwards: pick the answer (x) first, then build the equation
+  let answerRangeMin: number;
+  let answerRangeMax: number;
+  let coeffRangeMin: number;
+  let coeffRangeMax: number;
+
+  switch (difficulty) {
+    case 'easy':
+      answerRangeMin = 1;
+      answerRangeMax = 10;
+      coeffRangeMin = 1;
+      coeffRangeMax = 10;
+      break;
+    case 'medium':
+      answerRangeMin = 1;
+      answerRangeMax = 20;
+      coeffRangeMin = 2;
+      coeffRangeMax = 12;
+      break;
+    case 'hard':
+      answerRangeMin = 5;
+      answerRangeMax = 50;
+      coeffRangeMin = 3;
+      coeffRangeMax = 15;
+      break;
+    default:
+      answerRangeMin = 1;
+      answerRangeMax = 10;
+      coeffRangeMin = 1;
+      coeffRangeMax = 10;
+  }
+
+  const answer = randomInt(answerRangeMin, answerRangeMax);
+  const coeff = randomInt(coeffRangeMin, coeffRangeMax);
+
+  if (operation === 'equationAdd') {
+    // x + coeff = result  →  answer + coeff = result
+    const result = answer + coeff;
+    return {
+      num1: result,
+      num2: coeff,
+      operation: 'equationAdd',
+      correctAnswer: answer,
+      userAnswer: null,
+      isCorrect: null,
+      isFraction: false,
+      isEquation: true,
+    };
+  }
+
+  if (operation === 'equationSub') {
+    // x - coeff = result  →  answer - coeff = result  (ensure non-negative result)
+    const result = Math.max(0, answer - coeff);
+    return {
+      num1: result,
+      num2: coeff,
+      operation: 'equationSub',
+      correctAnswer: answer,
+      userAnswer: null,
+      isCorrect: null,
+      isFraction: false,
+      isEquation: true,
+    };
+  }
+
+  // equationMul: coeff * x = result  →  coeff * answer = result
+  const result = coeff * answer;
+  return {
+    num1: coeff,
+    num2: result,
+    operation: 'equationMul',
+    correctAnswer: answer,
+    userAnswer: null,
+    isCorrect: null,
+    isFraction: false,
+    isEquation: true,
   };
 }
 
@@ -229,7 +328,6 @@ export function useMathGame(
       if (feedback !== null) return;
       if (userDen === 0) return;
 
-      // Reduce user's answer
       const userGcd = gcd(userNum, userDen);
       const reducedUserNum = userNum / userGcd;
       const reducedUserDen = userDen / userGcd;

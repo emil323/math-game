@@ -4,11 +4,14 @@ export type Operation =
   | 'multiplication'
   | 'division'
   | 'fractionAdd'
-  | 'fractionSub';
+  | 'fractionSub'
+  | 'equationAdd'
+  | 'equationSub'
+  | 'equationMul';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
-export type ProblemCategory = 'whole' | 'fraction';
+export type ProblemCategory = 'whole' | 'fraction' | 'equation';
 
 export interface MathProblem {
   num1: number;
@@ -26,6 +29,7 @@ export interface MathProblem {
   answerDen?: number;
   userAnswerNum?: number;
   userAnswerDen?: number;
+  isEquation?: boolean;
 }
 
 export interface GameStats {

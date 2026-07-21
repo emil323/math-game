@@ -29,16 +29,20 @@ export default function MathProblemDisplay({
   }, [feedback, acknowledged]);
 
   const correctAnswerText = getCorrectAnswerText(problem);
+  const isFraction = problem.isFraction === true;
+  const isEquation = problem.isEquation === true;
 
   return (
     <div className="problem-card">
-      {problem.isFraction ? (
+      {isFraction ? (
         <FractionProblemDisplay problem={problem} />
+      ) : isEquation ? (
+        <EquationProblemDisplay problem={problem} />
       ) : (
         <WholeNumberProblemDisplay problem={problem} operator={operator} />
       )}
 
-      {problem.isFraction ? (
+      {isFraction ? (
         <FractionInput
           onAnswer={onFractionAnswer}
           disabled={feedback !== null}
@@ -48,7 +52,7 @@ export default function MathProblemDisplay({
           <input
             type="number"
             className="answer-input"
-            placeholder="Your answer"
+            placeholder={isEquation ? 'Value of x' : 'Your answer'}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !feedback) {
                 const value = (e.target as HTMLInputElement).value;
@@ -87,7 +91,7 @@ export default function MathProblemDisplay({
         <div className="feedback incorrect">
           <p>
             ❌ Wrong! The answer was{' '}
-            {problem.isFraction && problem.answerNum !== undefined && problem.answerDen !== undefined ? (
+            {isFraction && problem.answerNum !== undefined && problem.answerDen !== undefined ? (
               <span className="inline-fraction">
                 <FractionDisplay numerator={problem.answerNum} denominator={problem.answerDen} />
               </span>
@@ -181,6 +185,45 @@ function WholeNumberProblemDisplay({
       <span className="operand">{problem.num2}</span>
       <span className="equals">=</span>
       <span className="question-mark">?</span>
+    </div>
+  );
+}
+
+function EquationProblemDisplay({ problem }: { problem: MathProblem }) {
+  if (problem.operation === 'equationAdd') {
+    // x + num2 = num1
+    return (
+      <div className="problem-text">
+        <span className="variable">x</span>
+        <span className="operator">+</span>
+        <span className="operand">{problem.num2}</span>
+        <span className="equals">=</span>
+        <span className="operand">{problem.num1}</span>
+      </div>
+    );
+  }
+
+  if (problem.operation === 'equationSub') {
+    // x - num2 = num1
+    return (
+      <div className="problem-text">
+        <span className="variable">x</span>
+        <span className="operator">−</span>
+        <span className="operand">{problem.num2}</span>
+        <span className="equals">=</span>
+        <span className="operand">{problem.num1}</span>
+      </div>
+    );
+  }
+
+  // equationMul: num1 × x = num2
+  return (
+    <div className="problem-text">
+      <span className="operand">{problem.num1}</span>
+      <span className="operator">×</span>
+      <span className="variable">x</span>
+      <span className="equals">=</span>
+      <span className="operand">{problem.num2}</span>
     </div>
   );
 }

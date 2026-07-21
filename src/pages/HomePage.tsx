@@ -13,13 +13,14 @@ const problemCounts = [5, 10, 20];
 const categoryOptions: { value: ProblemCategory; label: string; description: string }[] = [
   { value: 'whole', label: 'Whole Numbers', description: '+ − × ÷' },
   { value: 'fraction', label: 'Fractions', description: '½ + ⅓ − ¼' },
+  { value: 'equation', label: 'Equations', description: 'x + 5 = 12' },
 ];
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [count, setCount] = useState(10);
-  const [categories, setCategories] = useState<ProblemCategory[]>(['whole', 'fraction']);
+  const [categories, setCategories] = useState<ProblemCategory[]>(['whole', 'fraction', 'equation']);
 
   const toggleCategory = (value: ProblemCategory) => {
     setCategories((prev) =>
@@ -38,7 +39,7 @@ export default function HomePage() {
   return (
     <div className="page home-page">
       <h1>🧮 Math Game</h1>
-      <p className="subtitle">Practice addition, subtraction, multiplication, division &amp; fractions!</p>
+      <p className="subtitle">Practice arithmetic, fractions &amp; equations!</p>
 
       <div className="options">
         <fieldset>
