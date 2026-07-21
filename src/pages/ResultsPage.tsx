@@ -1,4 +1,4 @@
-import { useSearchParams, Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 
 export default function ResultsPage() {
   const [searchParams] = useSearchParams();
@@ -12,7 +12,7 @@ export default function ResultsPage() {
   const difficultyLabels: Record<string, string> = {
     easy: 'Lett',
     medium: 'Middels',
-    hard: 'Vanskelig',
+    hard: 'Vanskelig'
   };
 
   const getMessage = () => {
@@ -44,14 +44,13 @@ export default function ResultsPage() {
           </div>
         </div>
 
-        <p className="difficulty-label">Vanskelighetsgrad: {difficultyLabels[difficulty] || difficulty}</p>
+        <p className="difficulty-label">
+          Vanskelighetsgrad: {difficultyLabels[difficulty] || difficulty}
+        </p>
       </div>
 
       <div className="results-actions">
-        <Link
-          to={`/play?difficulty=${difficulty}&count=${total}`}
-          className="play-btn"
-        >
+        <Link to={`/play?difficulty=${difficulty}&count=${total}`} className="play-btn">
           Spill igjen
         </Link>
         <Link to="/" className="home-link">

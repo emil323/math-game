@@ -1,9 +1,9 @@
-import { useSearchParams, useNavigate, Link } from 'react-router';
 import { useEffect, useRef } from 'react';
-import type { Difficulty, ProblemCategory } from '../types';
-import { useMathGame } from '../components/useMathGame';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import MathProblemDisplay from '../components/MathProblemDisplay';
 import ScoreBoard from '../components/ScoreBoard';
+import { useMathGame } from '../components/useMathGame';
+import type { Difficulty, ProblemCategory } from '../types';
 
 export default function GamePage() {
   const [searchParams] = useSearchParams();
@@ -24,7 +24,7 @@ export default function GamePage() {
     checkAnswer,
     checkFractionAnswer,
     acknowledge,
-    nextProblem,
+    nextProblem
   } = useMathGame(difficulty, count, categories);
 
   useEffect(() => {

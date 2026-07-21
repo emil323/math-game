@@ -13,7 +13,9 @@ export default function ScoreBoard({ score, current, total }: ScoreBoardProps) {
       </div>
       <div className="score-item">
         <span className="score-label">Oppgave</span>
-        <span className="score-value">{current} / {total}</span>
+        <span className="score-value">
+          {current} / {total}
+        </span>
       </div>
     </div>
   );

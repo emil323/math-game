@@ -1,5 +1,5 @@
-import type { MathProblem } from '../types';
 import { useEffect, useRef } from 'react';
+import type { MathProblem } from '../types';
 import FractionInput from './FractionInput';
 
 interface MathProblemDisplayProps {
@@ -17,7 +17,7 @@ export default function MathProblemDisplay({
   onFractionAnswer,
   feedback,
   acknowledged,
-  onAcknowledge,
+  onAcknowledge
 }: MathProblemDisplayProps) {
   const operator = getOperator(problem.operation);
   const ackBtnRef = useRef<HTMLButtonElement>(null);
@@ -43,10 +43,7 @@ export default function MathProblemDisplay({
       )}
 
       {isFraction ? (
-        <FractionInput
-          onAnswer={onFractionAnswer}
-          disabled={feedback !== null}
-        />
+        <FractionInput onAnswer={onFractionAnswer} disabled={feedback !== null} />
       ) : (
         <div className="answer-section">
           <input
@@ -69,9 +66,7 @@ export default function MathProblemDisplay({
             type="button"
             className="submit-btn"
             onClick={() => {
-              const input = document.querySelector(
-                '.answer-input',
-              ) as HTMLInputElement;
+              const input = document.querySelector('.answer-input') as HTMLInputElement;
               if (input && input.value !== '' && !feedback) {
                 onAnswer(Number.parseInt(input.value, 10));
               }
@@ -83,9 +78,7 @@ export default function MathProblemDisplay({
         </div>
       )}
 
-      {feedback === 'correct' && (
-        <div className="feedback correct">🎉 Riktig!</div>
-      )}
+      {feedback === 'correct' && <div className="feedback correct">🎉 Riktig!</div>}
 
       {feedback === 'incorrect' && !acknowledged && (
         <div className="feedback incorrect">
@@ -99,12 +92,7 @@ export default function MathProblemDisplay({
               <strong>{correctAnswerText}</strong>
             )}
           </p>
-          <button
-            ref={ackBtnRef}
-            type="button"
-            className="acknowledge-btn"
-            onClick={onAcknowledge}
-          >
+          <button ref={ackBtnRef} type="button" className="acknowledge-btn" onClick={onAcknowledge}>
             Fortsett
           </button>
         </div>
@@ -160,15 +148,9 @@ function FractionProblemDisplay({ problem }: { problem: MathProblem }) {
 
   return (
     <div className="problem-text">
-      <FractionDisplay
-        numerator={problem.num1Num!}
-        denominator={problem.num1Den!}
-      />
+      <FractionDisplay numerator={problem.num1Num!} denominator={problem.num1Den!} />
       <span className="operator">{operator}</span>
-      <FractionDisplay
-        numerator={problem.num2Num!}
-        denominator={problem.num2Den!}
-      />
+      <FractionDisplay numerator={problem.num2Num!} denominator={problem.num2Den!} />
       <span className="equals">=</span>
       <span className="question-mark">?</span>
     </div>
@@ -177,7 +159,7 @@ function FractionProblemDisplay({ problem }: { problem: MathProblem }) {
 
 function WholeNumberProblemDisplay({
   problem,
-  operator,
+  operator
 }: {
   problem: MathProblem;
   operator: string;

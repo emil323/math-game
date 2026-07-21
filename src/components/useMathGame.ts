@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import type { MathProblem, Difficulty, Operation, ProblemCategory } from '../types';
+import { useCallback, useState } from 'react';
+import type { Difficulty, MathProblem, Operation, ProblemCategory } from '../types';
 
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -16,10 +16,7 @@ function gcd(aParam: number, bParam: number): number {
   return a;
 }
 
-function generateProblem(
-  difficulty: Difficulty,
-  categories: ProblemCategory[],
-): MathProblem {
+function generateProblem(difficulty: Difficulty, categories: ProblemCategory[]): MathProblem {
   const hasWhole = categories.includes('whole');
   const hasFraction = categories.includes('fraction');
   const hasEquation = categories.includes('equation');
@@ -28,7 +25,7 @@ function generateProblem(
   const activeCategories = [
     hasWhole ? 'whole' : null,
     hasFraction ? 'fraction' : null,
-    hasEquation ? 'equation' : null,
+    hasEquation ? 'equation' : null
   ].filter(Boolean) as ProblemCategory[];
 
   const chosen = activeCategories[randomInt(0, activeCategories.length - 1)];
@@ -39,8 +36,7 @@ function generateProblem(
 }
 
 function generateFractionProblem(difficulty: Difficulty): MathProblem {
-  const operation: Operation =
-    Math.random() < 0.5 ? 'fractionAdd' : 'fractionSub';
+  const operation: Operation = Math.random() < 0.5 ? 'fractionAdd' : 'fractionSub';
 
   let denRangeMin: number;
   let denRangeMax: number;
@@ -105,7 +101,7 @@ function generateFractionProblem(difficulty: Difficulty): MathProblem {
     num2Num,
     num2Den,
     answerNum,
-    answerDen,
+    answerDen
   };
 }
 
@@ -189,7 +185,7 @@ function generateWholeNumberProblem(difficulty: Difficulty): MathProblem {
     userAnswer: null,
     isCorrect: null,
     isFraction: false,
-    isEquation: false,
+    isEquation: false
   };
 }
 
@@ -264,17 +260,17 @@ function generateEquationProblem(difficulty: Difficulty): MathProblem {
     eqCoeff: a,
     eqConstant: b,
     eqResult: c,
-    eqOp: op,
+    eqOp: op
   };
 }
 
 export function useMathGame(
   difficulty: Difficulty,
   totalProblems: number,
-  categories: ProblemCategory[],
+  categories: ProblemCategory[]
 ) {
   const [currentProblem, setCurrentProblem] = useState<MathProblem>(() =>
-    generateProblem(difficulty, categories),
+    generateProblem(difficulty, categories)
   );
   const [problemIndex, setProblemIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -290,7 +286,7 @@ export function useMathGame(
       setCurrentProblem((prev: MathProblem) => ({
         ...prev,
         userAnswer: answer,
-        isCorrect: isCorrect,
+        isCorrect: isCorrect
       }));
       setFeedback(isCorrect ? 'correct' : 'incorrect');
       setAcknowledged(isCorrect);
@@ -298,7 +294,7 @@ export function useMathGame(
         setScore((prev: number) => prev + 1);
       }
     },
-    [currentProblem.correctAnswer, feedback],
+    [currentProblem.correctAnswer, feedback]
   );
 
   const checkFractionAnswer = useCallback(
@@ -311,14 +307,13 @@ export function useMathGame(
       const reducedUserDen = userDen / userGcd;
 
       const isCorrect =
-        reducedUserNum === currentProblem.answerNum &&
-        reducedUserDen === currentProblem.answerDen;
+        reducedUserNum === currentProblem.answerNum && reducedUserDen === currentProblem.answerDen;
 
       setCurrentProblem((prev: MathProblem) => ({
         ...prev,
         userAnswerNum: userNum,
         userAnswerDen: userDen,
-        isCorrect: isCorrect,
+        isCorrect: isCorrect
       }));
       setFeedback(isCorrect ? 'correct' : 'incorrect');
       setAcknowledged(isCorrect);
@@ -326,7 +321,7 @@ export function useMathGame(
         setScore((prev: number) => prev + 1);
       }
     },
-    [currentProblem.answerNum, currentProblem.answerDen, feedback],
+    [currentProblem.answerNum, currentProblem.answerDen, feedback]
   );
 
   const acknowledge = useCallback(() => {
@@ -365,6 +360,6 @@ export function useMathGame(
     checkFractionAnswer,
     acknowledge,
     nextProblem,
-    resetGame,
+    resetGame
   };
 }

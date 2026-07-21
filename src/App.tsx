@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route } from 'react-router';
-import HomePage from './pages/HomePage';
+import { BrowserRouter, Route, Routes } from 'react-router';
 import GamePage from './pages/GamePage';
+import HomePage from './pages/HomePage';
 import ResultsPage from './pages/ResultsPage';
 
 function App() {
