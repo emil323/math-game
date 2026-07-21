@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { MathProblem, Difficulty, Operation } from './types';
+import type { MathProblem, Difficulty, Operation } from '../types';
 
 function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -25,6 +25,9 @@ function generateProblem(difficulty: Difficulty): MathProblem {
       num1 = randomInt(50, 100);
       num2 = randomInt(50, 100);
       break;
+    default:
+      num1 = randomInt(1, 10);
+      num2 = randomInt(1, 10);
   }
 
   // For subtraction, ensure the result is non-negative
