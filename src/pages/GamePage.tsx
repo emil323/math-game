@@ -55,13 +55,13 @@ export default function GamePage() {
       {acknowledged && (
         <div className="next-section">
           <button type="button" ref={nextBtnRef} className="next-btn" onClick={nextProblem}>
-            {problemIndex + 1 >= totalProblems ? 'See Results →' : 'Next Problem →'}
+            {problemIndex + 1 >= totalProblems ? 'Se resultater →' : 'Neste oppgave →'}
           </button>
         </div>
       )}
 
       <Link to="/" className="home-link">
-        ← Back to Home
+        ← Tilbake hjem
       </Link>
     </div>
   );

@@ -8,11 +8,11 @@ export default function ScoreBoard({ score, current, total }: ScoreBoardProps) {
   return (
     <div className="scoreboard">
       <div className="score-item">
-        <span className="score-label">Score</span>
+        <span className="score-label">Poeng</span>
         <span className="score-value">{score}</span>
       </div>
       <div className="score-item">
-        <span className="score-label">Problem</span>
+        <span className="score-label">Oppgave</span>
         <span className="score-value">{current} / {total}</span>
       </div>
     </div>

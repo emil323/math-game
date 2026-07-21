@@ -3,17 +3,17 @@ import { useState } from 'react';
 import type { Difficulty, ProblemCategory } from '../types';
 
 const difficulties: { value: Difficulty; label: string; description: string }[] = [
-  { value: 'easy', label: 'Easy', description: 'Numbers 1–10' },
-  { value: 'medium', label: 'Medium', description: 'Numbers 10–50' },
-  { value: 'hard', label: 'Hard', description: 'Numbers 50–100' },
+  { value: 'easy', label: 'Lett', description: 'Tall 1–10' },
+  { value: 'medium', label: 'Middels', description: 'Tall 10–50' },
+  { value: 'hard', label: 'Vanskelig', description: 'Tall 50–100' },
 ];
 
 const problemCounts = [5, 10, 20];
 
 const categoryOptions: { value: ProblemCategory; label: string; description: string }[] = [
-  { value: 'whole', label: 'Whole Numbers', description: '+ − × ÷' },
-  { value: 'fraction', label: 'Fractions', description: '½ + ⅓ − ¼' },
-  { value: 'equation', label: 'Equations', description: 'x + 5 = 12' },
+  { value: 'whole', label: 'Heltall', description: '+ − × ÷' },
+  { value: 'fraction', label: 'Brøk', description: '½ + ⅓ − ¼' },
+  { value: 'equation', label: 'Likninger', description: 'x + 5 = 12' },
 ];
 
 export default function HomePage() {
@@ -38,12 +38,12 @@ export default function HomePage() {
 
   return (
     <div className="page home-page">
-      <h1>🧮 Math Game</h1>
-      <p className="subtitle">Practice arithmetic, fractions &amp; equations!</p>
+      <h1>🧮 Regnespill</h1>
+      <p className="subtitle">Øv på regning, brøk og likninger!</p>
 
       <div className="options">
         <fieldset>
-          <legend>Difficulty</legend>
+          <legend>Vanskelighetsgrad</legend>
           <div className="option-group">
             {difficulties.map((d) => (
               <button
@@ -60,7 +60,7 @@ export default function HomePage() {
         </fieldset>
 
         <fieldset>
-          <legend>Problem Types</legend>
+          <legend>Oppgavetyper</legend>
           <div className="option-group">
             {categoryOptions.map((cat) => (
               <button
@@ -77,7 +77,7 @@ export default function HomePage() {
         </fieldset>
 
         <fieldset>
-          <legend>Number of Problems</legend>
+          <legend>Antall oppgaver</legend>
           <div className="option-group">
             {problemCounts.map((c) => (
               <button
@@ -86,7 +86,7 @@ export default function HomePage() {
                 className={`option-card ${count === c ? 'selected' : ''}`}
                 onClick={() => setCount(c)}
               >
-                <strong>{c} Problems</strong>
+                <strong>{c} oppgaver</strong>
               </button>
             ))}
           </div>
@@ -99,7 +99,7 @@ export default function HomePage() {
         onClick={startGame}
         disabled={categories.length === 0}
       >
-        Start Game
+        Start spill
       </button>
     </div>
   );

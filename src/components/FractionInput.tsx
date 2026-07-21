@@ -13,7 +13,7 @@ export default function FractionInput({
         <input
           type="number"
           className="answer-input"
-          placeholder="Num"
+          placeholder="Teller"
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter' && !disabled) {
               const numEl = document.querySelector(
@@ -38,7 +38,7 @@ export default function FractionInput({
         <input
           type="number"
           className="answer-input answer-input-den"
-          placeholder="Den"
+          placeholder="Nevner"
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter' && !disabled) {
               const numEl = document.querySelector(
@@ -77,7 +77,7 @@ export default function FractionInput({
         }}
         disabled={disabled}
       >
-        Submit
+        Send inn
       </button>
     </div>
   );

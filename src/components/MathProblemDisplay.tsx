@@ -52,7 +52,7 @@ export default function MathProblemDisplay({
           <input
             type="number"
             className="answer-input"
-            placeholder={isEquation ? 'Value of x' : 'Your answer'}
+            placeholder={isEquation ? 'Verdi av x' : 'Ditt svar'}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !feedback) {
                 const value = (e.target as HTMLInputElement).value;
@@ -78,19 +78,19 @@ export default function MathProblemDisplay({
             }}
             disabled={feedback !== null}
           >
-            Submit
+            Send inn
           </button>
         </div>
       )}
 
       {feedback === 'correct' && (
-        <div className="feedback correct">🎉 Correct!</div>
+        <div className="feedback correct">🎉 Riktig!</div>
       )}
 
       {feedback === 'incorrect' && !acknowledged && (
         <div className="feedback incorrect">
           <p>
-            ❌ Wrong! The answer was{' '}
+            ❌ Feil! Svaret var{' '}
             {isFraction && problem.answerNum !== undefined && problem.answerDen !== undefined ? (
               <span className="inline-fraction">
                 <FractionDisplay numerator={problem.answerNum} denominator={problem.answerDen} />
@@ -105,7 +105,7 @@ export default function MathProblemDisplay({
             className="acknowledge-btn"
             onClick={onAcknowledge}
           >
-            Continue
+            Fortsett
           </button>
         </div>
       )}

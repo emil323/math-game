@@ -9,16 +9,22 @@ export default function ResultsPage() {
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
   const incorrect = total - score;
 
+  const difficultyLabels: Record<string, string> = {
+    easy: 'Lett',
+    medium: 'Middels',
+    hard: 'Vanskelig',
+  };
+
   const getMessage = () => {
-    if (percentage === 100) return '🏆 Perfect score! Amazing!';
-    if (percentage >= 80) return '🌟 Great job! Almost perfect!';
-    if (percentage >= 60) return '👍 Good effort! Keep practicing!';
-    return '💪 Keep practicing! You will get better!';
+    if (percentage === 100) return '🏆 Perfekt resultat! Fantastisk!';
+    if (percentage >= 80) return '🌟 Flott jobbet! Nesten perfekt!';
+    if (percentage >= 60) return '👍 God innsats! Fortsett å øve!';
+    return '💪 Hold ut! Du blir bedre!';
   };
 
   return (
     <div className="page results-page">
-      <h1>Results</h1>
+      <h1>Resultater</h1>
 
       <div className="results-card">
         <p className="results-message">{getMessage()}</p>
@@ -26,19 +32,19 @@ export default function ResultsPage() {
         <div className="stats">
           <div className="stat">
             <span className="stat-value correct">{score}</span>
-            <span className="stat-label">Correct</span>
+            <span className="stat-label">Riktige</span>
           </div>
           <div className="stat">
             <span className="stat-value incorrect">{incorrect}</span>
-            <span className="stat-label">Incorrect</span>
+            <span className="stat-label">Feil</span>
           </div>
           <div className="stat">
             <span className="stat-value">{percentage}%</span>
-            <span className="stat-label">Score</span>
+            <span className="stat-label">Poengsum</span>
           </div>
         </div>
 
-        <p className="difficulty-label">Difficulty: {difficulty}</p>
+        <p className="difficulty-label">Vanskelighetsgrad: {difficultyLabels[difficulty] || difficulty}</p>
       </div>
 
       <div className="results-actions">
@@ -46,10 +52,10 @@ export default function ResultsPage() {
           to={`/play?difficulty=${difficulty}&count=${total}`}
           className="play-btn"
         >
-          Play Again
+          Spill igjen
         </Link>
         <Link to="/" className="home-link">
-          ← Home
+          ← Hjem
         </Link>
       </div>
     </div>
