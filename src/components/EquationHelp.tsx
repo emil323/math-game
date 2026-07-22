@@ -43,34 +43,32 @@ export default function EquationHelp({ problem }: EquationHelpProps) {
             <h3>📐 Hva er en ligning?</h3>
             <p>
               En ligning er et matematisk uttrykk med et likhetstegn (<strong>=</strong>).
-              Den har en venstre side og en høyre side — og de er like store.
+              Tenk på den som en <strong>vekt</strong> — begge sider må være i balanse.
             </p>
             <p>
-              Å <strong>løse</strong> en ligning betyr å finne ut hvilken verdi den ukjente
-              (vanligvis <strong>x</strong>) må ha for at likheten skal stemme.
+              Å <strong>løse</strong> ligningen betyr å finne ut hvilken verdi <strong>x</strong>
+              må ha for at balansen skal holde.
             </p>
           </section>
 
           <section className="help-section highlight">
-            <h3>🔍 Hvordan løser du ligningen?</h3>
+            <h3>🔍 Slik løser du ligningen</h3>
             <p>
-              Målet er å få <strong>x</strong> helt alene på den ene siden av likhetstegnet.
-              Du gjør dette ved å utføre motregninger:
+              Målet er alltid det samme: <strong>få x helt alene</strong> på den ene siden.
+              Du gjør dette ved å fjerne leddene rundt x, ett steg om gangen.
             </p>
             <ol>
               <li>
-                <strong>Fjern tallet som legges til eller trekkes fra</strong> — gjør det
-                motsatte på begge sider av likhetstegnet
+                <strong>Fjern tallleddet først</strong> — gjør det motsatte på begge sider
               </li>
               {hasCoefficient && (
                 <li>
-                  <strong>Del på tallet som x er ganget med</strong> — gjør det på begge
-                  sider av likhetstegnet
+                  <strong>Fjern ganging</strong> — del på tallet x er ganget med, på begge sider
                 </li>
               )}
             </ol>
             <p className="step-detail">
-              Husk: Det du gjør på den ene siden, <em>må</em> du også gjøre på den andre.
+              Hovedregel: Det du gjør på den ene siden, <em>må</em> du gjøre på den andre.
             </p>
           </section>
 
@@ -101,15 +99,23 @@ export default function EquationHelp({ problem }: EquationHelpProps) {
           </section>
 
           <section className="help-section">
-            <h3>💡 Tips</h3>
+            <h3>💡 Huskeregler</h3>
+            <p>For å fjerne et ledd, gjør det motsatte:</p>
             <ul>
-              <li>
-                <strong>Motregning:</strong> + blir til −, − blir til +, × blir til ÷
-              </li>
-              <li>
-                Gjøre <strong>samme operasjon på begge sider</strong> holder ligningen i
-                balanse
-              </li>
+              <li><strong>+</strong> fjernes med <strong>−</strong></li>
+              <li><strong>−</strong> fjernes med <strong>+</strong></li>
+              <li><strong>×</strong> fjernes med <strong>÷</strong></li>
+              <li><strong>÷</strong> fjernes med <strong>×</strong></li>
+            </ul>
+            <p className="step-detail">
+              Og husk: Siden ligningen er som en vekt, må du gjøre <strong>samme operasjon på
+              begge sider</strong> av likhetstegnet.
+            </p>
+          </section>
+
+          <section className="help-section">
+            <h3>🎮 I spillet</h3>
+            <ul>
               <li>Skriv inn verdien av <strong>x</strong> i feltet under oppgaven</li>
               <li>Trykk <strong>Enter</strong> for å sende inn svaret</li>
             </ul>
