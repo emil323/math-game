@@ -108,6 +108,59 @@ legend {
   color: var(--text-light);
 }
 
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.tab {
+  flex: 1;
+  padding: 0.85rem 0.5rem;
+  background: var(--card-bg);
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-light);
+  font-family: inherit;
+}
+
+.tab:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+
+.tab:hover {
+  background: #eef2ff;
+}
+
+.tab.active {
+  background: var(--primary);
+  color: white;
+}
+
+.tab.active strong {
+  color: white;
+}
+
+.tab.active span {
+  color: #e0e7ff;
+}
+
+.tab strong {
+  font-size: 1rem;
+}
+
+.tab span {
+  font-size: 0.75rem;
+}
+
 /* Buttons */
 .play-btn {
   display: inline-block;
