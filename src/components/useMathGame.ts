@@ -63,10 +63,6 @@ export function useMathGame(
     [currentProblem.answerNum, currentProblem.answerDen, feedback]
   );
 
-  const acknowledge = useCallback(() => {
-    nextProblem();
-  }, [nextProblem]);
-
   const nextProblem = useCallback(() => {
     if (problemIndex + 1 >= totalProblems) {
       setGameOver(true);
@@ -77,6 +73,10 @@ export function useMathGame(
     setFeedback(null);
     setAcknowledged(false);
   }, [problemIndex, totalProblems, difficulty, categories]);
+
+  const acknowledge = useCallback(() => {
+    nextProblem();
+  }, [nextProblem]);
 
   const resetGame = useCallback(() => {
     setCurrentProblem(generateProblem(difficulty, categories));
