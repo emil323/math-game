@@ -132,11 +132,19 @@ describe('generateFractionProblem', () => {
     }
   });
 
-  it('uses denominator range 2–4 on barneskole', () => {
+  it('always generates proper fractions (numerator < denominator)', () => {
+    for (let i = 0; i < 100; i++) {
+      const problem = generateFractionProblem('barneskole');
+      expect(problem.num1Num!).toBeLessThan(problem.num1Den!);
+      expect(problem.num2Num!).toBeLessThan(problem.num2Den!);
+    }
+  });
+
+  it('uses denominator range 2–10 on barneskole', () => {
     for (let i = 0; i < 50; i++) {
       const problem = generateFractionProblem('barneskole');
       expect(problem.num1Den).toBeGreaterThanOrEqual(2);
-      expect(problem.num1Den).toBeLessThanOrEqual(4);
+      expect(problem.num1Den).toBeLessThanOrEqual(10);
     }
   });
 

@@ -4,6 +4,18 @@ interface FractionInputProps {
 }
 
 export default function FractionInput({ onAnswer, disabled }: FractionInputProps) {
+  const handleSubmit = () => {
+    const numEl = document.querySelector(
+      '.fraction-input .answer-input'
+    ) as HTMLInputElement;
+    const denEl = document.querySelector(
+      '.fraction-input .answer-input-den'
+    ) as HTMLInputElement;
+    if (numEl?.value !== '' && denEl?.value !== '' && !disabled) {
+      onAnswer(Number.parseInt(numEl.value, 10), Number.parseInt(denEl.value, 10));
+    }
+  };
+
   return (
     <div className="answer-section">
       <div className="fraction-input">
@@ -13,15 +25,11 @@ export default function FractionInput({ onAnswer, disabled }: FractionInputProps
           placeholder="Teller"
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter' && !disabled) {
-              const numEl = document.querySelector(
-                '.fraction-input .answer-input'
-              ) as HTMLInputElement;
+              // Move focus to denominator on Enter from numerator
               const denEl = document.querySelector(
                 '.fraction-input .answer-input-den'
               ) as HTMLInputElement;
-              if (numEl?.value !== '' && denEl?.value !== '') {
-                onAnswer(Number.parseInt(numEl.value, 10), Number.parseInt(denEl.value, 10));
-              }
+              denEl?.focus();
             }
           }}
           disabled={disabled}
@@ -35,15 +43,7 @@ export default function FractionInput({ onAnswer, disabled }: FractionInputProps
           placeholder="Nevner"
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter' && !disabled) {
-              const numEl = document.querySelector(
-                '.fraction-input .answer-input'
-              ) as HTMLInputElement;
-              const denEl = document.querySelector(
-                '.fraction-input .answer-input-den'
-              ) as HTMLInputElement;
-              if (numEl?.value !== '' && denEl?.value !== '') {
-                onAnswer(Number.parseInt(numEl.value, 10), Number.parseInt(denEl.value, 10));
-              }
+              handleSubmit();
             }
           }}
           disabled={disabled}
@@ -52,15 +52,7 @@ export default function FractionInput({ onAnswer, disabled }: FractionInputProps
       <button
         type="button"
         className="submit-btn"
-        onClick={() => {
-          const numEl = document.querySelector('.fraction-input .answer-input') as HTMLInputElement;
-          const denEl = document.querySelector(
-            '.fraction-input .answer-input-den'
-          ) as HTMLInputElement;
-          if (numEl?.value !== '' && denEl?.value !== '' && !disabled) {
-            onAnswer(Number.parseInt(numEl.value, 10), Number.parseInt(denEl.value, 10));
-          }
-        }}
+        onClick={handleSubmit}
         disabled={disabled}
       >
         Send inn

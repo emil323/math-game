@@ -62,7 +62,7 @@ export function generateFractionProblem(difficulty: Difficulty): MathProblem {
   switch (difficulty) {
     case 'barneskole':
       denRangeMin = 2;
-      denRangeMax = 4;
+      denRangeMax = 10;
       sameDenominator = true;
       break;
     case 'ungdomskole':
@@ -81,10 +81,11 @@ export function generateFractionProblem(difficulty: Difficulty): MathProblem {
       sameDenominator = true;
   }
 
+  // Numerator must be strictly less than denominator (proper fractions only)
   let num1Den = randomInt(denRangeMin, denRangeMax);
-  let num1Num = randomInt(1, num1Den);
+  let num1Num = randomInt(1, num1Den - 1);
   let num2Den = sameDenominator ? num1Den : randomInt(denRangeMin, denRangeMax);
-  let num2Num = randomInt(1, num2Den);
+  let num2Num = randomInt(1, num2Den - 1);
 
   if (operation === 'fractionSub') {
     const val1 = num1Num / num1Den;

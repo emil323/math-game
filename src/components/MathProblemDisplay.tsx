@@ -85,9 +85,13 @@ export default function MathProblemDisplay({
           <p>
             ❌ Feil! Svaret var{' '}
             {isFraction && problem.answerNum !== undefined && problem.answerDen !== undefined ? (
-              <span className="inline-fraction">
-                <FractionDisplay numerator={problem.answerNum} denominator={problem.answerDen} />
-              </span>
+              problem.answerDen === 1 ? (
+                <strong>{problem.answerNum}</strong>
+              ) : (
+                <span className="inline-fraction">
+                  <FractionDisplay numerator={problem.answerNum} denominator={problem.answerDen} />
+                </span>
+              )
             ) : (
               <strong>{correctAnswerText}</strong>
             )}

@@ -29,11 +29,12 @@ test.describe('Home Page', () => {
     await page.goto('/');
 
     // At barneskole, equation should not be visible
-    await expect(page.getByRole('button', { name: 'Likninger' })).not.toBeVisible();
+    // Use button.option-card to scope to category buttons only (not problem count buttons)
+    await expect(page.locator('button.option-card').filter({ hasText: 'Likninger' })).not.toBeVisible();
 
     // Switch to ungdomskole
     await page.getByRole('button', { name: 'Ungdomskole' }).click();
-    await expect(page.getByRole('button', { name: 'Likninger' })).toBeVisible();
+    await expect(page.locator('button.option-card').filter({ hasText: 'Likninger' })).toBeVisible();
   });
 
   test('can toggle problem categories', async ({ page }) => {
@@ -66,9 +67,9 @@ test.describe('Home Page', () => {
   test('start button is disabled when no categories selected', async ({ page }) => {
     await page.goto('/');
 
-    // Deselect all categories
-    await page.getByRole('button', { name: 'Heltall' }).click();
-    await page.getByRole('button', { name: 'Brøk' }).click();
+    // Deselect all categories - use button.option-card to target category buttons specifically
+    await page.locator('button.option-card').filter({ hasText: 'Heltall' }).click();
+    await page.locator('button.option-card').filter({ hasText: 'Brøk' }).click();
 
     await expect(page.getByRole('button', { name: 'Start spill' })).toBeDisabled();
   });

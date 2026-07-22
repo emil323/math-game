@@ -2,7 +2,7 @@
 
 A browser-based math practice game for building arithmetic, fraction, and equation skills. Choose your difficulty, pick problem types, and track your progress!
 
-![Screenshot](./screenshot.png)
+![Screenshot](./readme.png)
 
 ## Features
 
