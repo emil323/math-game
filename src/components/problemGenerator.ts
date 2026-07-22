@@ -149,9 +149,21 @@ export function generateFractionProblem(difficulty: Difficulty): MathProblem {
       }
     }
   } else {
-    // Different denominators
-    [num1Num, num1Den] = generateSimplifiedFraction(denRangeMin, denRangeMax);
-    [num2Num, num2Den] = generateSimplifiedFraction(denRangeMin, denRangeMax);
+    // Different denominators — restrict to friendly values so LCM stays manageable for mental math
+    const friendlyDens = [2, 3, 4, 6, 8, 12];
+    num1Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
+    num2Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
+    while (num1Den === num2Den) {
+      num2Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
+    }
+    num1Num = randomInt(1, num1Den - 1);
+    while (gcd(num1Num, num1Den) !== 1) {
+      num1Num = randomInt(1, num1Den - 1);
+    }
+    num2Num = randomInt(1, num2Den - 1);
+    while (gcd(num2Num, num2Den) !== 1) {
+      num2Num = randomInt(1, num2Den - 1);
+    }
 
     if (!isAdd) {
       // Subtraction: ensure first fraction >= second for non-negative result

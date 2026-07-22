@@ -148,11 +148,12 @@ describe('generateFractionProblem', () => {
     }
   });
 
-  it('uses denominator range 2–10 on ungdomskole', () => {
+  it('uses denominator range 2–12 on ungdomskole', () => {
     for (let i = 0; i < 50; i++) {
       const problem = generateFractionProblem('ungdomskole');
       expect(problem.num1Den).toBeGreaterThanOrEqual(2);
-      expect(problem.num1Den).toBeLessThanOrEqual(10);
+      // Different-denominator problems use friendly set [2,3,4,6,8,12]
+      expect(problem.num1Den).toBeLessThanOrEqual(12);
     }
   });
 
