@@ -64,8 +64,8 @@ export function useMathGame(
   );
 
   const acknowledge = useCallback(() => {
-    setAcknowledged(true);
-  }, []);
+    nextProblem();
+  }, [nextProblem]);
 
   const nextProblem = useCallback(() => {
     if (problemIndex + 1 >= totalProblems) {
