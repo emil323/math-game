@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { MathProblem } from '../types';
 import FractionInput from './FractionInput';
+import FractionHelp from './FractionHelp';
 
 interface MathProblemDisplayProps {
   problem: MathProblem;
@@ -34,6 +35,7 @@ export default function MathProblemDisplay({
 
   return (
     <div className="problem-card">
+      {isFraction && <FractionHelp problem={problem} />}
       {isFraction ? (
         <FractionProblemDisplay problem={problem} />
       ) : isEquation ? (
