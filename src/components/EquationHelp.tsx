@@ -10,6 +10,14 @@ export default function EquationHelp({ problem }: EquationHelpProps) {
   const hasCoefficient = (problem.eqCoeff ?? 1) > 1;
   const isAddition = problem.eqOp === '+';
 
+  // Build example that matches the current problem's structure
+  const exCoeff = hasCoefficient ? 2 : 1;
+  const exConst = isAddition ? 3 : 5;
+  const exX = 4;
+  const exResult = isAddition ? exCoeff * exX + exConst : exCoeff * exX - exConst;
+  const exCoeffDisplay = exCoeff > 1 ? `${exCoeff}x` : 'x';
+  const exOpSymbol = isAddition ? '+' : '−';
+
   if (!isOpen) {
     return (
       <button
@@ -75,26 +83,27 @@ export default function EquationHelp({ problem }: EquationHelpProps) {
           <section className="help-section">
             <h3>📝 Eksempel</h3>
             <p>
-              {hasCoefficient ? (
-                <>
-                  Ta ligningen <strong>2x + 3 = 11</strong>:
-                </>
-              ) : (
-                <>
-                  Ta ligningen <strong>x + 3 = 7</strong>:
-                </>
-              )}
+              Ta ligningen <strong>{exCoeffDisplay} {exOpSymbol} {exConst} = {exResult}</strong>:
             </p>
             <ul>
               <li>
-                {isAddition ? 'Trekk fra' : 'Legg til'} 3 på begge sider:
-                {hasCoefficient ? (
-                  <> {isAddition ? '2x + 3 − 3 = 11 − 3' : '2x − 3 + 3 = 11 + 3'} → 2x = 8</>
-                ) : (
-                  <> {isAddition ? 'x + 3 − 3 = 7 − 3' : 'x − 3 + 3 = 7 + 3'} → x = 4</>
-                )}
+                {isAddition ? `Trekk fra ${exConst}` : `Legg til ${exConst}`} på begge sider:
+                {' '}
+                {exCoeffDisplay} {exOpSymbol} {exConst}{' '}
+                {isAddition ? `− ${exConst}` : `+ ${exConst}`} = {exResult}{' '}
+                {isAddition ? `− ${exConst}` : `+ ${exConst}`}
+                {' '}→ {exCoeffDisplay} = {exResult - (isAddition ? exConst : -exConst)}
               </li>
-              {hasCoefficient && <li>Del på 2: 2x ÷ 2 = 8 ÷ 2 → <strong>x = 4</strong></li>}
+              {hasCoefficient && (
+                <li>
+                  Del på {exCoeff}: {exCoeff}{exCoeffDisplay === 'x' ? 'x' : ''} ÷ {exCoeff} ={' '}
+                  {exResult - (isAddition ? exConst : -exConst)} ÷ {exCoeff}
+                  {' '}→ <strong>x = {exX}</strong>
+                </li>
+              )}
+              {!hasCoefficient && (
+                <li><strong>x = {exX}</strong></li>
+              )}
             </ul>
           </section>
 

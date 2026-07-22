@@ -106,7 +106,7 @@ export default function FractionHelp({ problem }: FractionHelpProps) {
               <div className="help-example">
                 <FracExpr parts={[
                   { type: 'text', value: 'Eksempel: ' },
-                  { type: 'frac', value: { n: 1, d: 4 } },
+                  { type: 'frac', value: { n: isAddition ? 1 : 2, d: 4 } },
                   { type: 'text', value: isAddition ? ' + ' : ' − ' },
                   { type: 'frac', value: { n: 2, d: 4 } },
                   { type: 'text', value: ' = ' },
