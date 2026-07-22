@@ -177,4 +177,33 @@ test.describe('Game Page', () => {
     const hasStrongDisplay = await feedbackEl.locator('strong').count();
     expect(hasFractionDisplay + hasStrongDisplay).toBeGreaterThan(0);
   });
+
+  test('shows correct answer in feedback for wrong equation answer', async ({ page }) => {
+    // Start with equation-only problems at ungdomskole
+    await page.goto('/');
+    // Switch to ungdomskole to enable equations
+    await page.getByRole('button', { name: 'Ungdomskole' }).click();
+    // Deselect Heltall and Brøk, then select Likninger
+    await page.locator('button.option-card').filter({ hasText: 'Heltall' }).click();
+    await page.locator('button.option-card').filter({ hasText: 'Brøk' }).click();
+    await page.locator('button.option-card').filter({ hasText: 'Likninger' }).click();
+    await page.getByRole('button', { name: '5 oppgaver' }).click();
+    await page.getByRole('button', { name: 'Start spill' }).click();
+    await expect(page).toHaveURL(/\/play/);
+
+    // Enter a deliberately wrong answer (0)
+    const answerInput = page.locator('input.answer-input');
+    await answerInput.fill('0');
+    await page.getByRole('button', { name: 'Send inn' }).click();
+
+    // Check that the incorrect feedback is shown with the correct answer
+    await expect(page.getByText(/Feil! Svaret var/)).toBeVisible();
+    // The correct answer should be displayed as a strong element
+    const feedbackEl = page.locator('.feedback.incorrect');
+    const hasStrongDisplay = await feedbackEl.locator('strong').count();
+    expect(hasStrongDisplay).toBeGreaterThan(0);
+    // The strong element should contain a number (not empty)
+    const strongText = await feedbackEl.locator('strong').first().textContent();
+    expect(strongText).toMatch(/\d/);
+  });
 });
