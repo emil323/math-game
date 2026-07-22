@@ -20,7 +20,7 @@ describe('gcd', () => {
 describe('generateWholeNumberProblem', () => {
   it('generates correct addition problems', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateWholeNumberProblem('easy');
+      const problem = generateWholeNumberProblem('barneskole');
       if (problem.operation === 'addition') {
         expect(problem.correctAnswer).toBe(problem.num1 + problem.num2);
       }
@@ -29,7 +29,7 @@ describe('generateWholeNumberProblem', () => {
 
   it('generates correct subtraction problems with non-negative results', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateWholeNumberProblem('easy');
+      const problem = generateWholeNumberProblem('barneskole');
       if (problem.operation === 'subtraction') {
         expect(problem.correctAnswer).toBe(problem.num1 - problem.num2);
         expect(problem.correctAnswer).toBeGreaterThanOrEqual(0);
@@ -39,7 +39,7 @@ describe('generateWholeNumberProblem', () => {
 
   it('generates correct multiplication problems', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateWholeNumberProblem('medium');
+      const problem = generateWholeNumberProblem('ungdomskole');
       if (problem.operation === 'multiplication') {
         expect(problem.correctAnswer).toBe(problem.num1 * problem.num2);
       }
@@ -48,7 +48,7 @@ describe('generateWholeNumberProblem', () => {
 
   it('generates division problems with whole number answers', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateWholeNumberProblem('hard');
+      const problem = generateWholeNumberProblem('videregående');
       if (problem.operation === 'division') {
         expect(problem.correctAnswer).toBe(problem.num1 / problem.num2);
         expect(problem.num1 % problem.num2).toBe(0);
@@ -56,13 +56,39 @@ describe('generateWholeNumberProblem', () => {
     }
   });
 
-  it('respects difficulty ranges for addition/subtraction', () => {
-    const easy = generateWholeNumberProblem('easy');
-    if (easy.operation === 'addition' || easy.operation === 'subtraction') {
-      expect(easy.num1).toBeGreaterThanOrEqual(1);
-      expect(easy.num1).toBeLessThanOrEqual(10);
-      expect(easy.num2).toBeGreaterThanOrEqual(1);
-      expect(easy.num2).toBeLessThanOrEqual(10);
+  it('respects barneskole ranges for addition/subtraction (1–20)', () => {
+    for (let i = 0; i < 50; i++) {
+      const problem = generateWholeNumberProblem('barneskole');
+      if (problem.operation === 'addition' || problem.operation === 'subtraction') {
+        expect(problem.num1).toBeGreaterThanOrEqual(1);
+        expect(problem.num1).toBeLessThanOrEqual(20);
+        expect(problem.num2).toBeGreaterThanOrEqual(1);
+        expect(problem.num2).toBeLessThanOrEqual(20);
+      }
+    }
+  });
+
+  it('respects ungdomskole ranges for addition/subtraction (10–100)', () => {
+    for (let i = 0; i < 50; i++) {
+      const problem = generateWholeNumberProblem('ungdomskole');
+      if (problem.operation === 'addition' || problem.operation === 'subtraction') {
+        expect(problem.num1).toBeGreaterThanOrEqual(10);
+        expect(problem.num1).toBeLessThanOrEqual(100);
+        expect(problem.num2).toBeGreaterThanOrEqual(10);
+        expect(problem.num2).toBeLessThanOrEqual(100);
+      }
+    }
+  });
+
+  it('respects videregående ranges for addition/subtraction (50–500)', () => {
+    for (let i = 0; i < 50; i++) {
+      const problem = generateWholeNumberProblem('videregående');
+      if (problem.operation === 'addition' || problem.operation === 'subtraction') {
+        expect(problem.num1).toBeGreaterThanOrEqual(50);
+        expect(problem.num1).toBeLessThanOrEqual(500);
+        expect(problem.num2).toBeGreaterThanOrEqual(50);
+        expect(problem.num2).toBeLessThanOrEqual(500);
+      }
     }
   });
 });
@@ -70,7 +96,7 @@ describe('generateWholeNumberProblem', () => {
 describe('generateFractionProblem', () => {
   it('generates fraction addition with correct answer', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateFractionProblem('easy');
+      const problem = generateFractionProblem('barneskole');
       if (problem.operation === 'fractionAdd') {
         const val1 = problem.num1Num! / problem.num1Den!;
         const val2 = problem.num2Num! / problem.num2Den!;
@@ -82,7 +108,7 @@ describe('generateFractionProblem', () => {
 
   it('generates fraction subtraction with non-negative results', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateFractionProblem('easy');
+      const problem = generateFractionProblem('barneskole');
       if (problem.operation === 'fractionSub') {
         const val1 = problem.num1Num! / problem.num1Den!;
         const val2 = problem.num2Num! / problem.num2Den!;
@@ -93,51 +119,75 @@ describe('generateFractionProblem', () => {
 
   it('reduces the answer fraction to lowest terms', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateFractionProblem('easy');
+      const problem = generateFractionProblem('barneskole');
       const g = gcd(problem.answerNum!, problem.answerDen!);
       expect(g).toBe(1);
     }
   });
 
-  it('uses same denominators on easy difficulty', () => {
+  it('uses same denominators on barneskole difficulty', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateFractionProblem('easy');
+      const problem = generateFractionProblem('barneskole');
       expect(problem.num1Den).toBe(problem.num2Den);
+    }
+  });
+
+  it('uses denominator range 2–4 on barneskole', () => {
+    for (let i = 0; i < 50; i++) {
+      const problem = generateFractionProblem('barneskole');
+      expect(problem.num1Den).toBeGreaterThanOrEqual(2);
+      expect(problem.num1Den).toBeLessThanOrEqual(4);
+    }
+  });
+
+  it('uses denominator range 2–10 on ungdomskole', () => {
+    for (let i = 0; i < 50; i++) {
+      const problem = generateFractionProblem('ungdomskole');
+      expect(problem.num1Den).toBeGreaterThanOrEqual(2);
+      expect(problem.num1Den).toBeLessThanOrEqual(10);
+    }
+  });
+
+  it('uses denominator range 2–24 on videregående', () => {
+    for (let i = 0; i < 50; i++) {
+      const problem = generateFractionProblem('videregående');
+      expect(problem.num1Den).toBeGreaterThanOrEqual(2);
+      expect(problem.num1Den).toBeLessThanOrEqual(24);
     }
   });
 });
 
 describe('generateEquationProblem', () => {
-  it('generates equations where correctAnswer satisfies ax + b = c', () => {
+  it('generates equations where correctAnswer satisfies ax ± b = c', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateEquationProblem('medium');
+      const problem = generateEquationProblem('ungdomskole');
       const { eqCoeff: a, eqConstant: b, eqResult: c, eqOp, correctAnswer: x } = problem;
       const result = eqOp === '+' ? a! * x + b! : a! * x - b!;
       expect(result).toBe(c!);
     }
   });
 
-  it('generates easy equations with coefficient 1', () => {
+  it('generates barneskole equations with coefficient 1', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateEquationProblem('easy');
+      const problem = generateEquationProblem('barneskole');
       expect(problem.eqCoeff).toBe(1);
       expect(problem.eqOp).toBe('+');
     }
   });
 
-  it('generates medium equations with coefficient 2-4', () => {
+  it('generates ungdomskole equations with coefficient 2–5', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateEquationProblem('medium');
+      const problem = generateEquationProblem('ungdomskole');
       expect(problem.eqCoeff).toBeGreaterThanOrEqual(2);
-      expect(problem.eqCoeff).toBeLessThanOrEqual(4);
+      expect(problem.eqCoeff).toBeLessThanOrEqual(5);
     }
   });
 
-  it('generates hard equations with coefficient 3-6', () => {
+  it('generates videregående equations with coefficient 3–8', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateEquationProblem('hard');
+      const problem = generateEquationProblem('videregående');
       expect(problem.eqCoeff).toBeGreaterThanOrEqual(3);
-      expect(problem.eqCoeff).toBeLessThanOrEqual(6);
+      expect(problem.eqCoeff).toBeLessThanOrEqual(8);
     }
   });
 });
@@ -145,7 +195,7 @@ describe('generateEquationProblem', () => {
 describe('generateProblem', () => {
   it('only generates problems from enabled categories', () => {
     for (let i = 0; i < 100; i++) {
-      const problem = generateProblem('easy', ['whole']);
+      const problem = generateProblem('barneskole', ['whole']);
       expect(problem.isFraction).toBe(false);
       expect(problem.isEquation).toBe(false);
     }
@@ -153,14 +203,14 @@ describe('generateProblem', () => {
 
   it('generates fraction problems when only fraction is enabled', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateProblem('easy', ['fraction']);
+      const problem = generateProblem('barneskole', ['fraction']);
       expect(problem.isFraction).toBe(true);
     }
   });
 
   it('generates equation problems when only equation is enabled', () => {
     for (let i = 0; i < 50; i++) {
-      const problem = generateProblem('easy', ['equation']);
+      const problem = generateProblem('barneskole', ['equation']);
       expect(problem.isEquation).toBe(true);
     }
   });
@@ -168,7 +218,7 @@ describe('generateProblem', () => {
   it('generates all types when all categories are enabled', () => {
     const seen = new Set<string>();
     for (let i = 0; i < 200; i++) {
-      const problem = generateProblem('easy', ['whole', 'fraction', 'equation']);
+      const problem = generateProblem('barneskole', ['whole', 'fraction', 'equation']);
       if (problem.isFraction) seen.add('fraction');
       else if (problem.isEquation) seen.add('equation');
       else seen.add('whole');

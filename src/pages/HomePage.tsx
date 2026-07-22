@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router';
 import type { Difficulty, ProblemCategory } from '../types';
 
 const difficulties: { value: Difficulty; label: string; description: string }[] = [
-  { value: 'easy', label: 'Lett', description: 'Tall 1–10' },
-  { value: 'medium', label: 'Middels', description: 'Tall 10–50' },
-  { value: 'hard', label: 'Vanskelig', description: 'Tall 50–100' }
+  { value: 'barneskole', label: 'Barneskole', description: 'Tall 1–20, enkle brøk' },
+  { value: 'ungdomskole', label: 'Ungdomskole', description: 'Tall 10–100, brøk, likninger' },
+  { value: 'videregående', label: 'Videregående', description: 'Tall 50–500, komplekse brøk' }
 ];
 
 const problemCounts = [5, 10, 20];
@@ -18,7 +18,7 @@ const categoryOptions: { value: ProblemCategory; label: string; description: str
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const [difficulty, setDifficulty] = useState<Difficulty>('barneskole');
   const [count, setCount] = useState(10);
   const [categories, setCategories] = useState<ProblemCategory[]>([
     'whole',

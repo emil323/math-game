@@ -4,15 +4,16 @@ export default function ResultsPage() {
   const [searchParams] = useSearchParams();
   const score = Number.parseInt(searchParams.get('score') || '0', 10);
   const total = Number.parseInt(searchParams.get('total') || '0', 10);
-  const difficulty = searchParams.get('difficulty') || 'easy';
+  const difficulty = searchParams.get('difficulty') || 'barneskole';
+  const categories = searchParams.get('categories') || 'whole,fraction,equation';
 
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
   const incorrect = total - score;
 
   const difficultyLabels: Record<string, string> = {
-    easy: 'Lett',
-    medium: 'Middels',
-    hard: 'Vanskelig'
+    barneskole: 'Barneskole',
+    ungdomskole: 'Ungdomskole',
+    videregående: 'Videregående'
   };
 
   const getMessage = () => {
@@ -50,7 +51,10 @@ export default function ResultsPage() {
       </div>
 
       <div className="results-actions">
-        <Link to={`/play?difficulty=${difficulty}&count=${total}`} className="play-btn">
+        <Link
+          to={`/play?difficulty=${difficulty}&count=${total}&categories=${categories}`}
+          className="play-btn"
+        >
           Spill igjen
         </Link>
         <Link to="/" className="home-link">

@@ -8,7 +8,7 @@ import type { Difficulty, ProblemCategory } from '../types';
 export default function GamePage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const difficulty = (searchParams.get('difficulty') as Difficulty) || 'easy';
+  const difficulty = (searchParams.get('difficulty') as Difficulty) || 'barneskole';
   const count = Number.parseInt(searchParams.get('count') || '10', 10);
   const categoriesParam = searchParams.get('categories') || 'whole,fraction';
   const categories = categoriesParam.split(',').filter(Boolean) as ProblemCategory[];
@@ -34,7 +34,9 @@ export default function GamePage() {
   }, [acknowledged]);
 
   if (gameOver) {
-    navigate(`/results?score=${score}&total=${totalProblems}&difficulty=${difficulty}`);
+    navigate(
+      `/results?score=${score}&total=${totalProblems}&difficulty=${difficulty}&categories=${categoriesParam}`
+    );
     return null;
   }
 

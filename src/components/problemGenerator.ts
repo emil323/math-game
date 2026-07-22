@@ -18,13 +18,22 @@ export function gcd(aParam: number, bParam: number): number {
 
 /** Pick a random category based on what's enabled, respecting frequency weights. */
 function pickCategory(categories: ProblemCategory[]): ProblemCategory {
-  const activeCategories = [
-    categories.includes('whole') ? 'whole' : null,
-    categories.includes('fraction') ? 'fraction' : null,
-    categories.includes('equation') ? 'equation' : null
-  ].filter((c): c is ProblemCategory => c !== null);
+  // Fractions appear less often than whole numbers by default
+  const weightedPool: ProblemCategory[] = [];
+  for (const cat of categories) {
+    if (cat === 'whole') {
+      // Whole numbers get 5 slots
+      for (let i = 0; i < 5; i++) weightedPool.push('whole');
+    } else if (cat === 'fraction') {
+      // Fractions get 2 slots
+      for (let i = 0; i < 2; i++) weightedPool.push('fraction');
+    } else if (cat === 'equation') {
+      // Equations get 2 slots
+      for (let i = 0; i < 2; i++) weightedPool.push('equation');
+    }
+  }
 
-  return activeCategories[randomInt(0, activeCategories.length - 1)];
+  return weightedPool[randomInt(0, weightedPool.length - 1)];
 }
 
 /** Generate a problem of the given category and difficulty. */
@@ -51,19 +60,19 @@ export function generateFractionProblem(difficulty: Difficulty): MathProblem {
   let sameDenominator: boolean;
 
   switch (difficulty) {
-    case 'easy':
+    case 'barneskole':
       denRangeMin = 2;
       denRangeMax = 4;
       sameDenominator = true;
       break;
-    case 'medium':
+    case 'ungdomskole':
       denRangeMin = 2;
-      denRangeMax = 6;
+      denRangeMax = 10;
       sameDenominator = Math.random() < 0.5;
       break;
-    case 'hard':
+    case 'videregående':
       denRangeMin = 2;
-      denRangeMax = 12;
+      denRangeMax = 24;
       sameDenominator = false;
       break;
     default:
@@ -126,17 +135,17 @@ export function generateWholeNumberProblem(difficulty: Difficulty): MathProblem 
 
   if (operation === 'multiplication' || operation === 'division') {
     switch (difficulty) {
-      case 'easy':
+      case 'barneskole':
         num1 = randomInt(1, 5);
         num2 = randomInt(1, 5);
         break;
-      case 'medium':
+      case 'ungdomskole':
         num1 = randomInt(2, 12);
         num2 = randomInt(2, 12);
         break;
-      case 'hard':
+      case 'videregående':
         num1 = randomInt(5, 20);
-        num2 = randomInt(2, 15);
+        num2 = randomInt(5, 20);
         break;
       default:
         num1 = randomInt(1, 5);
@@ -149,21 +158,21 @@ export function generateWholeNumberProblem(difficulty: Difficulty): MathProblem 
     }
   } else {
     switch (difficulty) {
-      case 'easy':
-        num1 = randomInt(1, 10);
-        num2 = randomInt(1, 10);
+      case 'barneskole':
+        num1 = randomInt(1, 20);
+        num2 = randomInt(1, 20);
         break;
-      case 'medium':
-        num1 = randomInt(10, 50);
-        num2 = randomInt(10, 50);
+      case 'ungdomskole':
+        num1 = randomInt(10, 100);
+        num2 = randomInt(10, 100);
         break;
-      case 'hard':
-        num1 = randomInt(50, 100);
-        num2 = randomInt(50, 100);
+      case 'videregående':
+        num1 = randomInt(50, 500);
+        num2 = randomInt(50, 500);
         break;
       default:
-        num1 = randomInt(1, 10);
-        num2 = randomInt(1, 10);
+        num1 = randomInt(1, 20);
+        num2 = randomInt(1, 20);
     }
 
     if (operation === 'subtraction' && num1 < num2) {
@@ -216,7 +225,7 @@ export function generateEquationProblem(difficulty: Difficulty): MathProblem {
   let bMax: number;
 
   switch (difficulty) {
-    case 'easy':
+    case 'barneskole':
       xMin = 1;
       xMax = 10;
       aMin = 1;
@@ -224,21 +233,21 @@ export function generateEquationProblem(difficulty: Difficulty): MathProblem {
       bMin = 1;
       bMax = 10;
       break;
-    case 'medium':
+    case 'ungdomskole':
       xMin = 1;
-      xMax = 12;
-      aMin = 2;
-      aMax = 4;
-      bMin = 1;
-      bMax = 12;
-      break;
-    case 'hard':
-      xMin = 2;
       xMax = 15;
-      aMin = 3;
-      aMax = 6;
+      aMin = 2;
+      aMax = 5;
       bMin = 1;
-      bMax = 15;
+      bMax = 20;
+      break;
+    case 'videregående':
+      xMin = 2;
+      xMax = 20;
+      aMin = 3;
+      aMax = 8;
+      bMin = 5;
+      bMax = 30;
       break;
     default:
       xMin = 1;
@@ -253,7 +262,7 @@ export function generateEquationProblem(difficulty: Difficulty): MathProblem {
   const a = randomInt(aMin, aMax);
   const b = randomInt(bMin, bMax);
 
-  const usePlus = difficulty === 'easy' || Math.random() < 0.6;
+  const usePlus = difficulty === 'barneskole' || Math.random() < 0.6;
   const op = usePlus ? '+' : '-';
 
   const c = op === '+' ? a * x + b : a * x - b;

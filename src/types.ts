@@ -7,7 +7,7 @@ export type Operation =
   | 'fractionSub'
   | 'equation';
 
-export type Difficulty = 'easy' | 'medium' | 'hard';
+export type Difficulty = 'barneskole' | 'ungdomskole' | 'videregående';
 
 export type ProblemCategory = 'whole' | 'fraction' | 'equation';
 
