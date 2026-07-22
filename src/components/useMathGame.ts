@@ -75,8 +75,8 @@ export function useMathGame(
   }, [problemIndex, totalProblems, difficulty, categories]);
 
   const acknowledge = useCallback(() => {
-    nextProblem();
-  }, [nextProblem]);
+    setAcknowledged(true);
+  }, []);
 
   const resetGame = useCallback(() => {
     setCurrentProblem(generateProblem(difficulty, categories));

@@ -52,53 +52,121 @@ export function generateProblem(
 // Fraction problems
 // ---------------------------------------------------------------------------
 
+/** Generate a proper fraction in simplest form (GCD(numerator, denominator) === 1). */
+function generateSimplifiedFraction(denMin: number, denMax: number): [number, number] {
+  const den = randomInt(denMin, denMax);
+  let num = randomInt(1, den - 1);
+  while (gcd(num, den) !== 1) {
+    num = randomInt(1, den - 1);
+  }
+  return [num, den];
+}
+
 export function generateFractionProblem(difficulty: Difficulty): MathProblem {
   const operation: Operation = Math.random() < 0.5 ? 'fractionAdd' : 'fractionSub';
+  const isAdd = operation === 'fractionAdd';
 
   let denRangeMin: number;
   let denRangeMax: number;
   let sameDenominator: boolean;
+  let requireProperResult: boolean; // result must be <= 1
 
   switch (difficulty) {
     case 'barneskole':
       denRangeMin = 2;
       denRangeMax = 10;
       sameDenominator = true;
+      requireProperResult = true;
       break;
     case 'ungdomskole':
       denRangeMin = 2;
       denRangeMax = 10;
       sameDenominator = Math.random() < 0.5;
+      requireProperResult = false;
       break;
     case 'videregående':
       denRangeMin = 2;
       denRangeMax = 24;
       sameDenominator = false;
+      requireProperResult = false;
       break;
     default:
       denRangeMin = 2;
       denRangeMax = 4;
       sameDenominator = true;
+      requireProperResult = true;
   }
 
-  // Numerator must be strictly less than denominator (proper fractions only)
-  let num1Den = randomInt(denRangeMin, denRangeMax);
-  let num1Num = randomInt(1, num1Den - 1);
-  let num2Den = sameDenominator ? num1Den : randomInt(denRangeMin, denRangeMax);
-  let num2Num = randomInt(1, num2Den - 1);
+  let num1Num: number;
+  let num1Den: number;
+  let num2Num: number;
+  let num2Den: number;
 
-  if (operation === 'fractionSub') {
-    const val1 = num1Num / num1Den;
-    const val2 = num2Num / num2Den;
-    if (val1 < val2) {
-      [num1Num, num2Num] = [num2Num, num1Num];
-      [num1Den, num2Den] = [num2Den, num1Den];
+  if (sameDenominator) {
+    // Both fractions share the same denominator, simplified form
+    let den = randomInt(denRangeMin, denRangeMax);
+    num1Den = den;
+    num2Den = den;
+
+    if (isAdd && requireProperResult) {
+      // For barneskole addition: num1 + num2 <= den (result is proper or exactly 1)
+      // Pick num1 first, then constrain num2
+      num1Num = randomInt(1, den - 1);
+      while (gcd(num1Num, den) !== 1) {
+        num1Num = randomInt(1, den - 1);
+      }
+      // num2 must be >= 1 and num1Num + num2 <= den
+      const maxNum2 = den - num1Num;
+      if (maxNum2 < 1) {
+        // Retry with a smaller num1
+        num1Num = randomInt(1, Math.max(1, Math.floor(den / 2)));
+        while (gcd(num1Num, den) !== 1) {
+          num1Num = randomInt(1, Math.max(1, Math.floor(den / 2)));
+        }
+      }
+      num2Num = randomInt(1, Math.min(maxNum2, den - 1));
+      while (gcd(num2Num, den) !== 1) {
+        num2Num = randomInt(1, Math.min(maxNum2, den - 1));
+      }
+    } else if (!isAdd) {
+      // Subtraction: ensure num1 >= num2 for non-negative result
+      num1Num = randomInt(1, den - 1);
+      while (gcd(num1Num, den) !== 1) {
+        num1Num = randomInt(1, den - 1);
+      }
+      num2Num = randomInt(1, Math.max(1, num1Num));
+      while (gcd(num2Num, den) !== 1) {
+        num2Num = randomInt(1, Math.max(1, num1Num));
+      }
+    } else {
+      // ungdomskole same-denominator addition (improper results OK)
+      [num1Num, num1Den] = generateSimplifiedFraction(denRangeMin, denRangeMax);
+      den = num1Den;
+      num2Den = den;
+      num2Num = randomInt(1, den - 1);
+      while (gcd(num2Num, den) !== 1) {
+        num2Num = randomInt(1, den - 1);
+      }
+    }
+  } else {
+    // Different denominators
+    [num1Num, num1Den] = generateSimplifiedFraction(denRangeMin, denRangeMax);
+    [num2Num, num2Den] = generateSimplifiedFraction(denRangeMin, denRangeMax);
+
+    if (!isAdd) {
+      // Subtraction: ensure first fraction >= second for non-negative result
+      const val1 = num1Num / num1Den;
+      const val2 = num2Num / num2Den;
+      if (val1 < val2) {
+        [num1Num, num2Num] = [num2Num, num1Num];
+        [num1Den, num2Den] = [num2Den, num1Den];
+      }
     }
   }
 
   const commonDen = num1Den * num2Den;
   const an =
-    operation === 'fractionAdd'
+    isAdd
       ? num1Num * num2Den + num2Num * num1Den
       : num1Num * num2Den - num2Num * num1Den;
 

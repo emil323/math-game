@@ -163,6 +163,33 @@ describe('generateFractionProblem', () => {
       expect(problem.num1Den).toBeLessThanOrEqual(24);
     }
   });
+
+  it('generates input fractions in simplest form (GCD = 1)', () => {
+    for (let i = 0; i < 100; i++) {
+      const problem = generateFractionProblem('barneskole');
+      expect(gcd(problem.num1Num!, problem.num1Den!)).toBe(1);
+      expect(gcd(problem.num2Num!, problem.num2Den!)).toBe(1);
+    }
+    for (let i = 0; i < 100; i++) {
+      const problem = generateFractionProblem('ungdomskole');
+      expect(gcd(problem.num1Num!, problem.num1Den!)).toBe(1);
+      expect(gcd(problem.num2Num!, problem.num2Den!)).toBe(1);
+    }
+    for (let i = 0; i < 100; i++) {
+      const problem = generateFractionProblem('videregående');
+      expect(gcd(problem.num1Num!, problem.num1Den!)).toBe(1);
+      expect(gcd(problem.num2Num!, problem.num2Den!)).toBe(1);
+    }
+  });
+
+  it('barneskole addition results are proper fractions (answerNum <= answerDen)', () => {
+    for (let i = 0; i < 100; i++) {
+      const problem = generateFractionProblem('barneskole');
+      if (problem.operation === 'fractionAdd') {
+        expect(problem.answerNum!).toBeLessThanOrEqual(problem.answerDen!);
+      }
+    }
+  });
 });
 
 describe('generateEquationProblem', () => {

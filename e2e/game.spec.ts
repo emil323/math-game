@@ -99,9 +99,9 @@ test.describe('Game Page', () => {
       await answerInput.fill('1');
       await page.getByRole('button', { name: 'Send inn' }).click();
 
-      // Wait for next/ack buttons to appear (more reliable than .feedback)
+      // Wait for any action button to appear
       await expect(
-        page.getByRole('button', { name: /Neste oppgave|Fortsett/ })
+        page.getByRole('button', { name: /Neste oppgave|Fortsett|Se resultater/ })
       ).toBeVisible();
 
       // If incorrect, click "Fortsett" first
@@ -137,9 +137,9 @@ test.describe('Game Page', () => {
       await denominator.fill('2');
       await page.getByRole('button', { name: 'Send inn' }).click();
 
-      // Wait for next/ack buttons to appear
+      // Wait for any action button to appear
       await expect(
-        page.getByRole('button', { name: /Neste oppgave|Fortsett/ })
+        page.getByRole('button', { name: /Neste oppgave|Fortsett|Se resultater/ })
       ).toBeVisible();
 
       // If incorrect, click "Fortsett" first
@@ -164,8 +164,8 @@ test.describe('Game Page', () => {
     await page.getByRole('button', { name: 'Start spill' }).click();
     await expect(page).toHaveURL(/\/play/);
 
-    // Enter a deliberately wrong answer (0/1)
-    await page.getByPlaceholder('Teller').fill('0');
+    // Enter a deliberately wrong answer (9/1 = 9, impossible for barneskole fractions which are <= 1)
+    await page.getByPlaceholder('Teller').fill('9');
     await page.getByPlaceholder('Nevner').fill('1');
     await page.getByRole('button', { name: 'Send inn' }).click();
 
