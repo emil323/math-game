@@ -103,6 +103,7 @@ export function generateFractionProblem(difficulty: Difficulty): MathProblem {
   let num2Den: number;
   let answerNum: number;
   let answerDen: number;
+  let attempts = 0;
 
   // Keep generating until we get a result that is not 0 or 1
   do {
@@ -154,7 +155,7 @@ export function generateFractionProblem(difficulty: Difficulty): MathProblem {
       }
     } else {
       // Different denominators — restrict to friendly values so LCM stays manageable for mental math
-      const friendlyDens = [2, 3, 4, 6, 8, 12];
+      const friendlyDens = difficulty === 'videregående' ? [3, 4, 6, 8, 9, 12, 16, 18, 24] : [2, 3, 4, 6, 8, 12];
       num1Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
       num2Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
       while (num1Den === num2Den) {
@@ -189,7 +190,7 @@ export function generateFractionProblem(difficulty: Difficulty): MathProblem {
     const g = gcd(an, commonDen);
     answerNum = an / g;
     answerDen = commonDen / g;
-  } while (answerNum === 0 || (answerNum === 1 && answerDen === 1));
+  } while ((answerNum === 0 || (answerNum === 1 && answerDen === 1)) && ++attempts < 100);
 
   return {
     num1: 0,
@@ -218,71 +219,74 @@ export function generateWholeNumberProblem(difficulty: Difficulty): MathProblem 
 
   let num1: number;
   let num2: number;
-
-  if (operation === 'multiplication' || operation === 'division') {
-    switch (difficulty) {
-      case 'barneskole':
-        num1 = randomInt(1, 5);
-        num2 = randomInt(1, 5);
-        break;
-      case 'ungdomskole':
-        num1 = randomInt(2, 12);
-        num2 = randomInt(2, 12);
-        break;
-      case 'videregående':
-        num1 = randomInt(5, 20);
-        num2 = randomInt(5, 20);
-        break;
-      default:
-        num1 = randomInt(1, 5);
-        num2 = randomInt(1, 5);
-    }
-
-    if (operation === 'division') {
-      const answer = num1;
-      num1 = num2 * answer;
-    }
-  } else {
-    switch (difficulty) {
-      case 'barneskole':
-        num1 = randomInt(1, 20);
-        num2 = randomInt(1, 20);
-        break;
-      case 'ungdomskole':
-        num1 = randomInt(10, 100);
-        num2 = randomInt(10, 100);
-        break;
-      case 'videregående':
-        num1 = randomInt(50, 500);
-        num2 = randomInt(50, 500);
-        break;
-      default:
-        num1 = randomInt(1, 20);
-        num2 = randomInt(1, 20);
-    }
-
-    if (operation === 'subtraction' && num1 < num2) {
-      [num1, num2] = [num2, num1];
-    }
-  }
-
   let correctAnswer: number;
-  switch (operation) {
-    case 'addition':
-      correctAnswer = num1 + num2;
-      break;
-    case 'subtraction':
-      correctAnswer = num1 - num2;
-      break;
-    case 'multiplication':
-      correctAnswer = num1 * num2;
-      break;
-    case 'division':
-      correctAnswer = num1 / num2;
-      break;
-    default:
-      correctAnswer = 0;
-  }
+  let attempts = 0;
+
+  do {
+    if (operation === 'multiplication' || operation === 'division') {
+      switch (difficulty) {
+        case 'barneskole':
+          num1 = randomInt(1, 5);
+          num2 = randomInt(1, 5);
+          break;
+        case 'ungdomskole':
+          num1 = randomInt(2, 12);
+          num2 = randomInt(2, 12);
+          break;
+        case 'videregående':
+          num1 = randomInt(5, 20);
+          num2 = randomInt(5, 20);
+          break;
+        default:
+          num1 = randomInt(1, 5);
+          num2 = randomInt(1, 5);
+      }
+
+      if (operation === 'division') {
+        const answer = num1;
+        num1 = num2 * answer;
+      }
+    } else {
+      switch (difficulty) {
+        case 'barneskole':
+          num1 = randomInt(1, 20);
+          num2 = randomInt(1, 20);
+          break;
+        case 'ungdomskole':
+          num1 = randomInt(10, 100);
+          num2 = randomInt(10, 100);
+          break;
+        case 'videregående':
+          num1 = randomInt(50, 500);
+          num2 = randomInt(50, 500);
+          break;
+        default:
+          num1 = randomInt(1, 20);
+          num2 = randomInt(1, 20);
+      }
+
+      if (operation === 'subtraction' && num1 < num2) {
+        [num1, num2] = [num2, num1];
+      }
+    }
+
+    switch (operation) {
+      case 'addition':
+        correctAnswer = num1 + num2;
+        break;
+      case 'subtraction':
+        correctAnswer = num1 - num2;
+        break;
+      case 'multiplication':
+        correctAnswer = num1 * num2;
+        break;
+      case 'division':
+        correctAnswer = num1 / num2;
+        break;
+      default:
+        correctAnswer = 0;
+    }
+  } while (correctAnswer === 0 && ++attempts < 100);
 
   return {
     num1,
@@ -348,8 +352,9 @@ export function generateEquationProblem(difficulty: Difficulty): MathProblem {
   const a = randomInt(aMin, aMax);
   const b = randomInt(bMin, bMax);
 
-  const usePlus = difficulty === 'barneskole' || Math.random() < 0.6;
-  const op = usePlus ? '+' : '-';
+  let op = difficulty === 'barneskole' || Math.random() < 0.6 ? '+' : '-';
+  // Ensure result (c) is non-negative for consistency
+  if (op === '-' && a * x < b) op = '+';
 
   const c = op === '+' ? a * x + b : a * x - b;
 
