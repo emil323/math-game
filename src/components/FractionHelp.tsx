@@ -5,6 +5,30 @@ interface FractionHelpProps {
   problem: MathProblem;
 }
 
+function Frac({ n, d }: { n: number; d: number }) {
+  return (
+    <span className="fraction">
+      <span className="fraction-num">{n}</span>
+      <span className="fraction-bar" />
+      <span className="fraction-den">{d}</span>
+    </span>
+  );
+}
+
+function FracExpr({ parts }: { parts: Array<{ type: 'frac' | 'text' | 'op'; value: string | { n: number; d: number } }> }) {
+  return (
+    <span className="frac-expr">
+      {parts.map((part, i) =>
+        part.type === 'frac' ? (
+          <Frac key={i} n={part.value.n} d={part.value.d} />
+        ) : (
+          <span key={i} className="frac-text">{part.value}</span>
+        )
+      )}
+    </span>
+  );
+}
+
 export default function FractionHelp({ problem }: FractionHelpProps) {
   const [isOpen, setIsOpen] = useState(false);
   const sameDenominator = problem.num1Den === problem.num2Den;
@@ -42,14 +66,20 @@ export default function FractionHelp({ problem }: FractionHelpProps) {
           <section className="help-section">
             <h3>📐 Hva er en brøk?</h3>
             <p>
-              En brøk skrives som to tall (eller bokstaver) som står over hverandre
-              med en strek i midten. Det øverste tallet kalles <strong>telleren</strong>.
-              Det nederste tallet kalles <strong>nevneren</strong>.
+              En brøk skrives som to tall med en strek mellom dem.
+              Tallet <strong>over</strong> streken kalles <strong>telleren</strong>.
+              Tallet <strong>under</strong> streken kalles <strong>nevneren</strong>.
             </p>
             <p>
-              Nevneren forteller hvor mange deler enheten er delt inn i. Telleren
-              forteller hvor mange slike deler brøken inneholder.
+              <strong>Nevneren</strong> forteller hvor mange like deler en helhet er delt i.
+              <strong>Telleren</strong> forteller hvor mange av delene vi har.
             </p>
+            <div className="help-example">
+              <FracExpr parts={[
+                { type: 'frac', value: { n: 3, d: 4 } },
+                { type: 'text', value: ' betyr 3 av 4 like deler' }
+              ]} />
+            </div>
           </section>
 
           {sameDenominator ? (
@@ -64,20 +94,24 @@ export default function FractionHelp({ problem }: FractionHelpProps) {
                 {isAddition ? (
                   <>
                     <li>Legg sammen <strong>tellerne</strong></li>
-                    <li>Behold <strong>nevneren</strong></li>
+                    <li><strong>Nevneren</strong> er den samme i svaret</li>
                   </>
                 ) : (
                   <>
-                    <li>Trekken <strong>tellerne</strong> fra hverandre</li>
-                    <li>Behold <strong>nevneren</strong></li>
+                    <li>Trekk <strong>tellerne</strong> fra hverandre</li>
+                    <li><strong>Nevneren</strong> er den samme i svaret</li>
                   </>
                 )}
               </ul>
               <div className="help-example">
-                <p>
-                  Eksempel: 1/4 {isAddition ? '+' : '−'} 2/4 ={' '}
-                  {isAddition ? '3' : '-1'}/4
-                </p>
+                <FracExpr parts={[
+                  { type: 'text', value: 'Eksempel: ' },
+                  { type: 'frac', value: { n: 1, d: 4 } },
+                  { type: 'text', value: isAddition ? ' + ' : ' − ' },
+                  { type: 'frac', value: { n: 2, d: 4 } },
+                  { type: 'text', value: ' = ' },
+                  { type: 'frac', value: { n: isAddition ? 3 : 1, d: 4 } }
+                ]} />
               </div>
             </section>
           ) : (
@@ -86,26 +120,56 @@ export default function FractionHelp({ problem }: FractionHelpProps) {
                 {isAddition ? '➕ Legge sammen' : '➖ Trekke fra'} – ulik nevner
               </h3>
               <p>
-                Når brøkene har <strong>ulik nevner</strong>, må du først finne en{' '}
-                <strong>fellesnevner</strong>:
+                Når brøkene har <strong>ulik nevner</strong>, kan du ikke bare legge sammen
+                eller trekke fra tellerne. Du må først finne en <strong>fellesnevner</strong>.
               </p>
               <ol>
-                <li>Finn en fellesnevner (ofte produktet av de to nevnerne)</li>
                 <li>
-                  <strong>Utvid</strong> hver brøk: Ganger både teller og nevner med
-                  samme tall
+                  <strong>Finn en fellesnevner</strong> — et tall som begge nevnere går opp i.
+                  Den enkleste måten er å gange de to nevnere sammen.
+                </li>
+                <li>
+                  <strong>Utvid brøkene</strong> — ganger både teller og nevner med et tall
+                  slik at nevneren blir fellesnevneren.
+                  Det du gjør med nevneren, <em>må</em> du også gjøre med telleren.
                 </li>
                 <li>
                   Nå har brøkene samme nevner —{' '}
-                  {isAddition ? 'legg sammen' : 'trekk fra'} tellerne
+                  {isAddition ? 'legg sammen' : 'trekk fra'} tellerne.
+                  <strong>Nevneren er fellesnevneren.</strong>
                 </li>
               </ol>
               <div className="help-example">
-                <p>
-                  Eksempel: 1/3 + 1/4 → 4/12 + 3/12 = 7/12
-                </p>
+                <FracExpr parts={[
+                  { type: 'text', value: 'Eksempel: ' },
+                  { type: 'frac', value: { n: 1, d: 3 }},
+                  { type: 'text', value: ' + ' },
+                  { type: 'frac', value: { n: 1, d: 4 }},
+                  { type: 'text', value: ' → ' },
+                  { type: 'frac', value: { n: 4, d: 12 }},
+                  { type: 'text', value: ' + ' },
+                  { type: 'frac', value: { n: 3, d: 12 }},
+                  { type: 'text', value: ' = ' },
+                  { type: 'frac', value: { n: 7, d: 12 }}
+                ]} />
                 <p className="step-detail">
-                  1/3 × 4/4 = 4/12, 1/4 × 3/3 = 3/12
+                  <FracExpr parts={[
+                    { type: 'frac', value: { n: 1, d: 3 }},
+                    { type: 'text', value: ' × ' },
+                    { type: 'frac', value: { n: 4, d: 4 }},
+                    { type: 'text', value: ' = ' },
+                    { type: 'frac', value: { n: 4, d: 12 }}
+                  ]} />
+                  {' '}
+                  ,
+                  {' '}
+                  <FracExpr parts={[
+                    { type: 'frac', value: { n: 1, d: 4 }},
+                    { type: 'text', value: ' × ' },
+                    { type: 'frac', value: { n: 3, d: 3 }},
+                    { type: 'text', value: ' = ' },
+                    { type: 'frac', value: { n: 3, d: 12 }}
+                  ]} />
                 </p>
               </div>
             </section>
@@ -114,23 +178,28 @@ export default function FractionHelp({ problem }: FractionHelpProps) {
           <section className="help-section">
             <h3>✂️ Forkorte brøken</h3>
             <p>
-              Del både teller og nevner på samme tall for å få brøken på{' '}
-              <strong>enkleste form</strong>.
+              Hvis teller og nevner kan deles på samme tall, bør du forkorte brøken.
+              Da får du brøken på <strong>enkleste form</strong>.
             </p>
             <div className="help-example">
-              <p>Eksempel: 4/8 = 1/2 (delt på 4)</p>
+              <FracExpr parts={[
+                { type: 'text', value: 'Eksempel: ' },
+                { type: 'frac', value: { n: 4, d: 8 }},
+                { type: 'text', value: ' = ' },
+                { type: 'frac', value: { n: 1, d: 2 }},
+                { type: 'text', value: ' (teller og nevner delt på 4)' }
+              ]} />
             </div>
           </section>
 
           <section className="help-section">
             <h3>💡 Tips</h3>
             <ul>
-              <li>Skriv svaret på <strong>enkleste form</strong> (forkortet)</li>
+              <li>Skriv svaret på <strong>enkleste form</strong> — forkort brøken hvis du kan</li>
               <li>
-                Bruk <strong>teller</strong> og <strong>nevner</strong>-feltene under
-                oppgaven
+                Bruk <strong>teller</strong>- og <strong>nevner</strong>-feltene under oppgaven
               </li>
-              <li>Trykk <strong>Enter</strong> i nevner-feltet for å sende inn</li>
+              <li>Trykk <strong>Enter</strong> i nevner-feltet for å sende inn svaret</li>
             </ul>
           </section>
         </div>
