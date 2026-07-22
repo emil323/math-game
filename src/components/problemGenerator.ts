@@ -101,90 +101,95 @@ export function generateFractionProblem(difficulty: Difficulty): MathProblem {
   let num1Den: number;
   let num2Num: number;
   let num2Den: number;
+  let answerNum: number;
+  let answerDen: number;
 
-  if (sameDenominator) {
-    // Both fractions share the same denominator, simplified form
-    let den = randomInt(denRangeMin, denRangeMax);
-    num1Den = den;
-    num2Den = den;
+  // Keep generating until we get a result that is not 0 or 1
+  do {
+    if (sameDenominator) {
+      // Both fractions share the same denominator, simplified form
+      let den = randomInt(denRangeMin, denRangeMax);
+      num1Den = den;
+      num2Den = den;
 
-    if (isAdd && requireProperResult) {
-      // For barneskole addition: num1 + num2 <= den (result is proper or exactly 1)
-      // Pick num1 first, then constrain num2
-      num1Num = randomInt(1, den - 1);
-      while (gcd(num1Num, den) !== 1) {
+      if (isAdd && requireProperResult) {
+        // For barneskole addition: num1 + num2 <= den (result is proper or exactly 1)
+        // Pick num1 first, then constrain num2
         num1Num = randomInt(1, den - 1);
-      }
-      // num2 must be >= 1 and num1Num + num2 <= den
-      const maxNum2 = den - num1Num;
-      if (maxNum2 < 1) {
-        // Retry with a smaller num1
-        num1Num = randomInt(1, Math.max(1, Math.floor(den / 2)));
         while (gcd(num1Num, den) !== 1) {
+          num1Num = randomInt(1, den - 1);
+        }
+        // num2 must be >= 1 and num1Num + num2 <= den
+        const maxNum2 = den - num1Num;
+        if (maxNum2 < 1) {
+          // Retry with a smaller num1
           num1Num = randomInt(1, Math.max(1, Math.floor(den / 2)));
+          while (gcd(num1Num, den) !== 1) {
+            num1Num = randomInt(1, Math.max(1, Math.floor(den / 2)));
+          }
+        }
+        num2Num = randomInt(1, Math.min(maxNum2, den - 1));
+        while (gcd(num2Num, den) !== 1) {
+          num2Num = randomInt(1, Math.min(maxNum2, den - 1));
+        }
+      } else if (!isAdd) {
+        // Subtraction: ensure num1 >= num2 for non-negative result
+        num1Num = randomInt(1, den - 1);
+        while (gcd(num1Num, den) !== 1) {
+          num1Num = randomInt(1, den - 1);
+        }
+        num2Num = randomInt(1, Math.max(1, num1Num));
+        while (gcd(num2Num, den) !== 1) {
+          num2Num = randomInt(1, Math.max(1, num1Num));
+        }
+      } else {
+        // ungdomskole same-denominator addition (improper results OK)
+        [num1Num, num1Den] = generateSimplifiedFraction(denRangeMin, denRangeMax);
+        const den = num1Den;
+        num2Den = den;
+        num2Num = randomInt(1, den - 1);
+        while (gcd(num2Num, den) !== 1) {
+          num2Num = randomInt(1, den - 1);
         }
       }
-      num2Num = randomInt(1, Math.min(maxNum2, den - 1));
-      while (gcd(num2Num, den) !== 1) {
-        num2Num = randomInt(1, Math.min(maxNum2, den - 1));
-      }
-    } else if (!isAdd) {
-      // Subtraction: ensure num1 >= num2 for non-negative result
-      num1Num = randomInt(1, den - 1);
-      while (gcd(num1Num, den) !== 1) {
-        num1Num = randomInt(1, den - 1);
-      }
-      num2Num = randomInt(1, Math.max(1, num1Num));
-      while (gcd(num2Num, den) !== 1) {
-        num2Num = randomInt(1, Math.max(1, num1Num));
-      }
     } else {
-      // ungdomskole same-denominator addition (improper results OK)
-      [num1Num, num1Den] = generateSimplifiedFraction(denRangeMin, denRangeMax);
-      den = num1Den;
-      num2Den = den;
-      num2Num = randomInt(1, den - 1);
-      while (gcd(num2Num, den) !== 1) {
-        num2Num = randomInt(1, den - 1);
-      }
-    }
-  } else {
-    // Different denominators — restrict to friendly values so LCM stays manageable for mental math
-    const friendlyDens = [2, 3, 4, 6, 8, 12];
-    num1Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
-    num2Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
-    while (num1Den === num2Den) {
+      // Different denominators — restrict to friendly values so LCM stays manageable for mental math
+      const friendlyDens = [2, 3, 4, 6, 8, 12];
+      num1Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
       num2Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
-    }
-    num1Num = randomInt(1, num1Den - 1);
-    while (gcd(num1Num, num1Den) !== 1) {
+      while (num1Den === num2Den) {
+        num2Den = friendlyDens[randomInt(0, friendlyDens.length - 1)];
+      }
       num1Num = randomInt(1, num1Den - 1);
-    }
-    num2Num = randomInt(1, num2Den - 1);
-    while (gcd(num2Num, num2Den) !== 1) {
+      while (gcd(num1Num, num1Den) !== 1) {
+        num1Num = randomInt(1, num1Den - 1);
+      }
       num2Num = randomInt(1, num2Den - 1);
-    }
+      while (gcd(num2Num, num2Den) !== 1) {
+        num2Num = randomInt(1, num2Den - 1);
+      }
 
-    if (!isAdd) {
-      // Subtraction: ensure first fraction >= second for non-negative result
-      const val1 = num1Num / num1Den;
-      const val2 = num2Num / num2Den;
-      if (val1 < val2) {
-        [num1Num, num2Num] = [num2Num, num1Num];
-        [num1Den, num2Den] = [num2Den, num1Den];
+      if (!isAdd) {
+        // Subtraction: ensure first fraction >= second for non-negative result
+        const val1 = num1Num / num1Den;
+        const val2 = num2Num / num2Den;
+        if (val1 < val2) {
+          [num1Num, num2Num] = [num2Num, num1Num];
+          [num1Den, num2Den] = [num2Den, num1Den];
+        }
       }
     }
-  }
 
-  const commonDen = num1Den * num2Den;
-  const an =
-    isAdd
-      ? num1Num * num2Den + num2Num * num1Den
-      : num1Num * num2Den - num2Num * num1Den;
+    const commonDen = num1Den * num2Den;
+    const an =
+      isAdd
+        ? num1Num * num2Den + num2Num * num1Den
+        : num1Num * num2Den - num2Num * num1Den;
 
-  const g = gcd(an, commonDen);
-  const answerNum = an / g;
-  const answerDen = commonDen / g;
+    const g = gcd(an, commonDen);
+    answerNum = an / g;
+    answerDen = commonDen / g;
+  } while (answerNum === 0 || (answerNum === 1 && answerDen === 1));
 
   return {
     num1: 0,
