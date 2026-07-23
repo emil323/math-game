@@ -75,7 +75,7 @@ test.describe('Help Modals', () => {
 
   test('Fraction help modal title is visible', async ({ page }) => {
     // Fraction help should always be available
-    const fractionHelpBtn = page.getByText('Brøk').first();
+    const _fractionHelpBtn = page.getByText('Brøk').first();
     
     // Click the help button to open the modal
     // Note: The help might appear as an inline "?" button on the category label
@@ -105,7 +105,7 @@ test.describe('Help Modals', () => {
   });
 
   test('Fraction help modal content is readable', async ({ page }) => {
-    const fractionHelpBtn = page.getByText('Brøk').first();
+    const _fractionHelpBtn = page.getByText('Brøk').first();
     
     // Open the help
     await page.locator('.help-btn').click();
@@ -192,7 +192,7 @@ test.describe('Help Modals', () => {
   });
 
   test('Fraction help modal contains keyboard event listeners', async ({ page }) => {
-    const fractionHelpBtn = page.getByText('Brøk').first();
+    const _fractionHelpBtn = page.getByText('Brøk').first();
     
     // Open the help via .help-btn (which should trigger the fraction help)
     await page.locator('.help-btn').click();
