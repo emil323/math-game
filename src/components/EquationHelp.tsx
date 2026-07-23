@@ -32,8 +32,18 @@ export default function EquationHelp({ problem }: EquationHelpProps) {
   }
 
   return (
-    <div className="help-overlay" onClick={() => setIsOpen(false)}>
-      <div className="help-modal" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="help-overlay"
+      onClick={() => setIsOpen(false)}
+      onKeyDown={() => setIsOpen(false)}
+      onKeyPress={() => setIsOpen(false)}
+    >
+      <div
+        className="help-modal"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={() => setIsOpen(false)}
+        onKeyPress={() => setIsOpen(false)}
+      >
         <div className="help-header">
           <h2>Ligninger</h2>
           <button

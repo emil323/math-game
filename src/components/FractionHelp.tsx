@@ -18,11 +18,20 @@ function Frac({ n, d }: { n: number; d: number }) {
 function FracExpr({ parts }: { parts: Array<{ type: 'frac' | 'text' | 'op'; value: string | { n: number; d: number } }> }) {
   return (
     <span className="frac-expr">
-      {parts.map((part, i) =>
+      {parts.map((part, index) =>
         part.type === 'frac' ? (
-          <Frac key={i} n={part.value.n} d={part.value.d} />
+          <Frac
+            key={`frac-${index}-${part.value.n}-${part.value.d}`}
+            n={part.value.n}
+            d={part.value.d}
+          />
         ) : (
-          <span key={i} className="frac-text">{part.value}</span>
+          <span
+            key={`text-${index}-${part.value}`}
+            className="frac-text"
+          >
+            {part.value}
+          </span>
         )
       )}
     </span>
@@ -48,8 +57,18 @@ export default function FractionHelp({ problem }: FractionHelpProps) {
   }
 
   return (
-    <div className="help-overlay" onClick={() => setIsOpen(false)}>
-      <div className="help-modal" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="help-overlay"
+      onClick={() => setIsOpen(false)}
+      onKeyDown={() => setIsOpen(false)}
+      onKeyPress={() => setIsOpen(false)}
+    >
+      <div
+        className="help-modal"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={() => setIsOpen(false)}
+        onKeyPress={() => setIsOpen(false)}
+      >
         <div className="help-header">
           <h2>Brøkregning</h2>
           <button

@@ -109,7 +109,7 @@ export function generateFractionProblem(difficulty: Difficulty): MathProblem {
   do {
     if (sameDenominator) {
       // Both fractions share the same denominator, simplified form
-      let den = randomInt(denRangeMin, denRangeMax);
+      const den = randomInt(denRangeMin, denRangeMax);
       num1Den = den;
       num2Den = den;
 
